@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\OrderService.CQRS\OrderService.CQRS.csproj" />
+      <ProjectReference Include="..\OrderService.Postgres\OrderService.Postgres.csproj" />
     </ItemGroup>
 
 </Project>
