@@ -6,7 +6,7 @@ namespace OrderService.CQRS;
 
 public class OrderQueryProcessor(IConnectionMultiplexer connectionMultiplexer, RedisConfig redisConfig) : IOrderQueryProcessor
 {
-    public async Task<OrderResponseItem> GetOrderById(Guid id)
+    public async Task<OrderResponseItem> GetById(Guid id)
     {
         var redisDb = connectionMultiplexer.GetDatabase();
         var cacheKey = $"{redisConfig.OrderCacheKeyPrefix}:{id}";

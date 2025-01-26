@@ -2,15 +2,15 @@ namespace OrderService.Entities.Models.Events;
 
 public record OrderCreatedEvent
 {
-    public Guid OrderId { get; init; }
+    public long OrderId { get; init; }
     
-    public Guid CustomerId { get; init; }
+    public long CustomerId { get; init; }
     
-    public DateTimeOffset OrderDate { get; init; }
+    public int[] Items { get; init; } = null!;
     
     public decimal TotalAmount { get; init; }
-
-    public Guid[] Items { get; init; } = null!;
+    
+    public DateTimeOffset OrderDate { get; init; }
     
     public OrderStatus OrderStatus { get; init; }
 }

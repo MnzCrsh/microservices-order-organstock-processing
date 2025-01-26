@@ -13,4 +13,8 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OrderService.Entities\OrderService.Entities.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Entities", "Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Postgres", "OrderService.Postgres\OrderService.Postgres.csproj", "{CB44867C-9D33-41DB-8DD4-1157F012AEA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Repositories", "OrderService.Repositories\OrderService.Repositories.csproj", "{1F300447-60FC-4C34-9196-36A26054B8AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{CB44867C-9D33-41DB-8DD4-1157F012AEA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB44867C-9D33-41DB-8DD4-1157F012AEA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB44867C-9D33-41DB-8DD4-1157F012AEA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F300447-60FC-4C34-9196-36A26054B8AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F300447-60FC-4C34-9196-36A26054B8AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F300447-60FC-4C34-9196-36A26054B8AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F300447-60FC-4C34-9196-36A26054B8AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
