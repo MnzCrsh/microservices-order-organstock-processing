@@ -1,6 +1,7 @@
 using OrderService.Core;
 using OrderService.CQRS;
 using OrderService.Postgres;
+using OrderService.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ var postgresConfig = builder.Configuration.GetSection("Postgres");
 builder.Services
     .AddOpenApi()
     .AddMigrations(postgresConfig["ConnectionString"])
+    .AddSqlConnection(postgresConfig)
     .AddKafkaProducers(kafkaConfig)
     .AddRedis(builder.Configuration);
 

@@ -4,7 +4,7 @@ public record OrderCreatedEvent
 {
     public long OrderId { get; init; }
     
-    public long CustomerId { get; init; }
+    public Guid CustomerId { get; init; }
     
     public int[] Items { get; init; } = null!;
     

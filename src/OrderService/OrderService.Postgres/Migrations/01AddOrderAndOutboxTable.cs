@@ -9,24 +9,25 @@ public class AddOrderAndOutboxTable : Migration
     public override void Up()
     {
         Create.Table("Order")
-            .WithColumn("Prefix").AsInt16().NotNullable().WithDefaultValue(ServiceConstants.ServiceAssignedPrefix)
-            .WithColumn("Id").AsInt64().NotNullable().Unique().Identity()
-            .WithColumn("CustomerId").AsInt64().NotNullable()
+            .WithColumn("IdPrefix").AsByte().NotNullable().WithDefaultValue(ServiceConstants.ServiceAssignedPrefix)
+            .WithColumn("IdInfix").AsInt64().NotNullable().Unique().Identity()
+            .WithColumn("IdPostfix").AsByte().NotNullable()
+            .WithColumn("CustomerId").AsGuid().NotNullable()
             .WithColumn("TotalAmount").AsDecimal().NotNullable()
-            .WithColumn("OrderStatus").AsInt16().NotNullable().WithDefaultValue(OrderStatus.Created)
+            .WithColumn("OrderStatus").AsInt16().NotNullable().WithDefaultValue((int)OrderStatus.Created)
             .WithColumn("Items").AsCustom("JSON").NotNullable()
-            .WithColumn("CreatedTime").AsDateTime().NotNullable().WithDefaultValue(SystemMethods.CurrentDateTime)
-            .WithColumn("UpdatedTime").AsDateTime().NotNullable().WithDefaultValue(SystemMethods.CurrentDateTime);
+            .WithColumn("CreatedTime").AsDateTime().NotNullable()
+            .WithColumn("UpdatedTime").AsDateTime().NotNullable();
 
-        Create.PrimaryKey("PK_Order").OnTable("Order").Columns("Prefix", "Id");
+        Create.PrimaryKey("PK_Order").OnTable("Order").Columns("IdPrefix", "IdInfix", "IdPostfix");
 
         Create.Table("Outbox")
             .WithColumn("Id").AsInt64().PrimaryKey().Unique().Identity()
             .WithColumn("EventType").AsString(ServiceConstants.StringMaxLength).NotNullable()
             .WithColumn("Payload").AsCustom("JSON").NotNullable()
-            .WithColumn("CreatedTime").AsDateTimeOffset().NotNullable().WithDefaultValue(SystemMethods.CurrentDateTime)
+            .WithColumn("CreatedTime").AsDateTimeOffset().NotNullable()
             .WithColumn("ProcessedTime").AsDateTimeOffset().Nullable()
-            .WithColumn("Status").AsInt16().NotNullable().WithDefaultValue(MessageStatus.Pending)
+            .WithColumn("Status").AsInt16().NotNullable().WithDefaultValue((int)MessageStatus.Pending)
             .WithColumn("RetryCount").AsInt16().NotNullable().WithDefaultValue(0);
     }
 

@@ -9,11 +9,13 @@ public record Order
     /// Prefix number.
     /// Each service have unique prefix to avoid collisions.
     /// </summary>
-    public int Prefix { get; set; }
+    public byte IdPrefix { get; set; }
     
-    public long Id { get; set; }
+    public long IdInfix { get; set; }
     
-    public long CustomerId { get; init; }
+    public byte IdPostfix { get; set; }
+    
+    public Guid CustomerId { get; init; }
     
     public int[] Items { get; init; } = null!;
 

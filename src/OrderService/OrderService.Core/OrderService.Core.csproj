@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>c1f8593e-91d3-467d-984f-410f8c51ea53</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\OrderService.CQRS\OrderService.CQRS.csproj" />
       <ProjectReference Include="..\OrderService.Postgres\OrderService.Postgres.csproj" />
+      <ProjectReference Include="..\OrderService.Repositories\OrderService.Repositories.csproj" />
     </ItemGroup>
 
 </Project>
