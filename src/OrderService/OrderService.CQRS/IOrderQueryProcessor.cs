@@ -4,5 +4,5 @@ namespace OrderService.CQRS;
 
 public interface IOrderQueryProcessor
 {
-    Task<OrderResponseItem> GetOrderById(Guid id);
+    Task<OrderResponseItem> GetById(Guid id);
 }

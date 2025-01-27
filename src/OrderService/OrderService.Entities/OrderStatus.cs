@@ -5,29 +5,29 @@ namespace OrderService.Entities;
 public enum OrderStatus
 {
     [Display(Name = "Unavailable")]
-    NoneStatus1 = 0,
+    Unavailable1 = 0,
     
     [Display(Name = "Order is created")]
-    Created = 10,
+    Created = 1,
     
     [Display(Name = "Order is processing")]
-    Processing = 20,
+    Processing = 2,
     
     [Display(Name = "Processing payment")]
-    PaymentPending = 30,
+    PaymentPending = 3,
     
     [Display(Name = "Payment rejected")]
-    PaymentRejected = 40,
+    PaymentRejected = 4,
     
     [Display(Name = "Payment refunded")]
-    PaymentRefunded = 50,
+    PaymentRefunded = 5,
     
     [Display(Name = "Order confirmed")]
-    Confirmed = 60,
+    Confirmed = 6,
     
     [Display(Name = "Order is completed")]
-    Completed = 70,
+    Completed = 7,
     
     [Display(Name = "Unavailable")]
-    NoneStatus2 = 80
+    Unavailable2 = 8
 }

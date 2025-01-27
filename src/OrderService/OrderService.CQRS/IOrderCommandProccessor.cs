@@ -4,5 +4,5 @@ namespace OrderService.CQRS;
 
 public interface IOrderCommandProcessor
 {
-    public Task<Guid> ExecuteCreateOrderCommandAsync(CreateOrderCommand command);
+    public Task<Guid> ExecuteCreateAsync(CreateOrderCommand command);
 }
