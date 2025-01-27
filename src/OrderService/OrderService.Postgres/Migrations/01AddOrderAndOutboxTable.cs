@@ -9,17 +9,26 @@ public class AddOrderAndOutboxTable : Migration
     public override void Up()
     {
         Create.Table("Order")
-            .WithColumn("IdPrefix").AsByte().NotNullable().WithDefaultValue(ServiceConstants.ServiceAssignedPrefix)
-            .WithColumn("IdInfix").AsInt64().NotNullable().Unique().Identity()
-            .WithColumn("IdPostfix").AsByte().NotNullable()
+            
+            .WithColumn("CombinedKey")
+            .AsCustom("BIGINT GENERATED ALWAYS AS ((\"IdPrefix\" << 16) | (\"IdInfix\" << 8) | \"IdPostfix\") STORED")
+            .NotNullable()
+            .Unique()
+            
+            .WithColumn("IdPrefix").AsByte().NotNullable().Identity()
+            .WithColumn("IdInfix").AsInt64().NotNullable()
+            .WithColumn("IdPostfix").AsByte().NotNullable().WithDefaultValue(ServiceConstants.ServiceAssignedNumber)
+            
             .WithColumn("CustomerId").AsGuid().NotNullable()
             .WithColumn("TotalAmount").AsDecimal().NotNullable()
             .WithColumn("OrderStatus").AsInt16().NotNullable().WithDefaultValue((int)OrderStatus.Created)
             .WithColumn("Items").AsCustom("JSON").NotNullable()
             .WithColumn("CreatedTime").AsDateTime().NotNullable()
             .WithColumn("UpdatedTime").AsDateTime().NotNullable();
-
-        Create.PrimaryKey("PK_Order").OnTable("Order").Columns("IdPrefix", "IdInfix", "IdPostfix");
+        
+        Create.PrimaryKey("PK_Order")
+            .OnTable("Order")
+            .Columns("CombinedKey");
 
         Create.Table("Outbox")
             .WithColumn("Id").AsInt64().PrimaryKey().Unique().Identity()

@@ -1,19 +1,20 @@
 namespace OrderService.Entities.Models.Entities;
 
 /// <summary>
-/// Record that represents order entity 
+/// Record that represents order database entity 
 /// </summary>
 public record Order
 {
+    
     /// <summary>
-    /// Prefix number.
-    /// Each service have unique prefix to avoid collisions.
+    /// Random byte as id infix.
     /// </summary>
-    public byte IdPrefix { get; set; }
+    public byte IdInfix { get; init; }
     
-    public long IdInfix { get; set; }
-    
-    public byte IdPostfix { get; set; }
+    /// <summary>
+    /// Prefix + Infix + Postfix.
+    /// </summary>
+    public long CombinedId { get; init; }
     
     public Guid CustomerId { get; init; }
     

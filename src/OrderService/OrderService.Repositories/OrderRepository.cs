@@ -13,33 +13,34 @@ public class OrderRepository(DbConfig config) : IOrderRepository
     public async Task<OrderResponseItem> AddAsync(Order order)
     {
         const string query = """
-                             INSERT INTO "Order" (
-                                                "IdPrefix", "IdInfix",
-                                                "IdPostfix", "CustomerId",
-                                                "Items", "TotalAmount",
-                                                "OrderStatus", "CreatedTime",
-                                                "UpdatedTime")
-                                         VALUES (
-                                                 @IdPrefix, @IdInfix,
-                                                 @IdPostfix, @CustomerId,
-                                                 @Items, @TotalAmount,
-                                                 @OrderStatus, @CreatedTime,
-                                                 @UpdatedTime)
-                                         RETURNING
-                                                 "IdPrefix","IdInfix",
-                                                 "IdPostfix", "CustomerId",
+                              INSERT INTO "Order" (
+                                                 "IdInfix","CustomerId",
                                                  "Items", "TotalAmount",
                                                  "OrderStatus", "CreatedTime",
-                                                 "UpdatedTime" 
-                             """;
+                                                 "UpdatedTime")
+                                          VALUES (
+                                                  @IdInfix, @CustomerId,
+                                                  @Items, @TotalAmount,
+                                                  @OrderStatus, @CreatedTime,
+                                                  @UpdatedTime)
+                                          RETURNING
+                                                  "IdInfix", "CustomerId",
+                                                  "Items", "TotalAmount",
+                                                  "OrderStatus", "CreatedTime",
+                                                  "UpdatedTime" 
+                              """;
 
-        return await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) 
-               ?? throw new InvalidOperationException($"Unable to add order with ID:[{order.IdPrefix}-{order.IdInfix}-" +
-                                                      $"{order.IdPostfix} for user:{order.CustomerId}]");
+        return await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ??
+               throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
     }
 
     public async Task<OrderResponseItem> GetByIdAsync(long orderId)
     {
-        throw new NotImplementedException();
+        const string query = """
+                             SELECT * FROM "Order" WHERE "CombinedKey" = @orderId;
+                             """;
+        
+        return await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
+               ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
     }
 }
