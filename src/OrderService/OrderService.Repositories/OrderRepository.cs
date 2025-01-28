@@ -14,33 +14,37 @@ public class OrderRepository(DbConfig config) : IOrderRepository
     {
         const string query = """
                               INSERT INTO "Order" (
-                                                 "IdInfix","CustomerId",
+                                                 "Id","CustomerId",
                                                  "Items", "TotalAmount",
                                                  "OrderStatus", "CreatedTime",
                                                  "UpdatedTime")
                                           VALUES (
-                                                  @IdInfix, @CustomerId,
+                                                  @Id, @CustomerId,
                                                   @Items, @TotalAmount,
                                                   @OrderStatus, @CreatedTime,
                                                   @UpdatedTime)
                                           RETURNING
-                                                  "IdInfix", "CustomerId",
+                                                  "Id", "CustomerId",
                                                   "Items", "TotalAmount",
                                                   "OrderStatus", "CreatedTime",
                                                   "UpdatedTime" 
                               """;
 
-        return await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ??
-               throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
+        var res = await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ?? 
+                  throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
+        
+        return res;
     }
 
-    public async Task<OrderResponseItem> GetByIdAsync(long orderId)
+    public async Task<OrderResponseItem> GetByIdAsync(Guid orderId)
     {
         const string query = """
-                             SELECT * FROM "Order" WHERE "CombinedKey" = @orderId;
+                             SELECT * FROM "Order" WHERE "Id" = @orderId;
                              """;
         
-        return await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
-               ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
+        var res = await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
+                  ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
+        
+        return res;
     }
 }
