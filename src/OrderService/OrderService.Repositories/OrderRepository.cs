@@ -1,15 +1,11 @@
-using System.Data;
 using OrderService.Entities.Models.Entities;
 using OrderService.Entities.Models.Responses;
 using Dapper;
-using Microsoft.Data.SqlClient;
 
 namespace OrderService.Repositories;
 
-public class OrderRepository(DbConfig config) : IOrderRepository
+public class OrderRepository(IDbConnectionFactory connectionFactory) : IOrderRepository
 {
-    private readonly IDbConnection _connection = new SqlConnection(config.ConnectionString);
-
     public async Task<OrderResponseItem> AddAsync(Order order)
     {
         const string query = """
@@ -30,7 +26,8 @@ public class OrderRepository(DbConfig config) : IOrderRepository
                                                   "UpdatedTime" 
                               """;
 
-        var res = await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ?? 
+        using var connection = connectionFactory.CreateConnection();
+        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ?? 
                   throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
         
         return res;
@@ -42,7 +39,8 @@ public class OrderRepository(DbConfig config) : IOrderRepository
                              SELECT * FROM "Order" WHERE "Id" = @orderId;
                              """;
         
-        var res = await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
+        using var connection = connectionFactory.CreateConnection();
+        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
                   ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
         
         return res;
