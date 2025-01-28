@@ -2,7 +2,7 @@ namespace OrderService.Entities.Models.Responses;
 
 public record OrderResponseItem
 {
-    public long OrderId { get; init; }
+    public Guid OrderId { get; init; }
     
     public Guid CustomerId { get; init; }
     

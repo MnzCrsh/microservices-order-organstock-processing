@@ -1,46 +1,48 @@
-using System.Data;
 using OrderService.Entities.Models.Entities;
 using OrderService.Entities.Models.Responses;
 using Dapper;
-using Microsoft.Data.SqlClient;
 
 namespace OrderService.Repositories;
 
-public class OrderRepository(DbConfig config) : IOrderRepository
+public class OrderRepository(IDbConnectionFactory connectionFactory) : IOrderRepository
 {
-    private readonly IDbConnection _connection = new SqlConnection(config.ConnectionString);
-
     public async Task<OrderResponseItem> AddAsync(Order order)
     {
         const string query = """
                               INSERT INTO "Order" (
-                                                 "IdInfix","CustomerId",
+                                                 "Id","CustomerId",
                                                  "Items", "TotalAmount",
                                                  "OrderStatus", "CreatedTime",
                                                  "UpdatedTime")
                                           VALUES (
-                                                  @IdInfix, @CustomerId,
+                                                  @Id, @CustomerId,
                                                   @Items, @TotalAmount,
                                                   @OrderStatus, @CreatedTime,
                                                   @UpdatedTime)
                                           RETURNING
-                                                  "IdInfix", "CustomerId",
+                                                  "Id", "CustomerId",
                                                   "Items", "TotalAmount",
                                                   "OrderStatus", "CreatedTime",
                                                   "UpdatedTime" 
                               """;
 
-        return await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ??
-               throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
+        using var connection = connectionFactory.CreateConnection();
+        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ?? 
+                  throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
+        
+        return res;
     }
 
-    public async Task<OrderResponseItem> GetByIdAsync(long orderId)
+    public async Task<OrderResponseItem> GetByIdAsync(Guid orderId)
     {
         const string query = """
-                             SELECT * FROM "Order" WHERE "CombinedKey" = @orderId;
+                             SELECT * FROM "Order" WHERE "Id" = @orderId;
                              """;
         
-        return await _connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
-               ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
+        using var connection = connectionFactory.CreateConnection();
+        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
+                  ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
+        
+        return res;
     }
 }

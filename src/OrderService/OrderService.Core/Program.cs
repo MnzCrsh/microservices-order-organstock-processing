@@ -16,8 +16,8 @@ builder.Services
     .AddOpenApi()
     .AddMigrations(postgresConfig["ConnectionString"])
     .AddSqlConnection(postgresConfig)
-    .AddKafkaProducers(kafkaConfig)
-    .AddRedis(builder.Configuration);
+    .AddKafkaProducers(kafkaConfig);
+    // .AddRedis(builder.Configuration);
 
 builder.Services
     .AddScoped<IOrderCommandProcessor, OrderCommandProcessor>();

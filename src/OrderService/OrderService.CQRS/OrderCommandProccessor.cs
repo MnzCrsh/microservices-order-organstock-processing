@@ -1,8 +1,5 @@
-using System.Text.Json;
 using Confluent.Kafka;
-using OrderService.Entities;
 using OrderService.Entities.Models.Commands;
-using OrderService.Entities.Models.Events;
 
 namespace OrderService.CQRS;
 

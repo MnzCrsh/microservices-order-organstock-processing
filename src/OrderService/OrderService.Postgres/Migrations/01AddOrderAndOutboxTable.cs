@@ -9,16 +9,7 @@ public class AddOrderAndOutboxTable : Migration
     public override void Up()
     {
         Create.Table("Order")
-            
-            .WithColumn("CombinedKey")
-            .AsCustom("BIGINT GENERATED ALWAYS AS ((\"IdPrefix\" << 16) | (\"IdInfix\" << 8) | \"IdPostfix\") STORED")
-            .NotNullable()
-            .Unique()
-            
-            .WithColumn("IdPrefix").AsByte().NotNullable().Identity()
-            .WithColumn("IdInfix").AsInt64().NotNullable()
-            .WithColumn("IdPostfix").AsByte().NotNullable().WithDefaultValue(ServiceConstants.ServiceAssignedNumber)
-            
+            .WithColumn("Id").AsGuid().PrimaryKey().Unique()
             .WithColumn("CustomerId").AsGuid().NotNullable()
             .WithColumn("TotalAmount").AsDecimal().NotNullable()
             .WithColumn("OrderStatus").AsInt16().NotNullable().WithDefaultValue((int)OrderStatus.Created)
@@ -26,9 +17,9 @@ public class AddOrderAndOutboxTable : Migration
             .WithColumn("CreatedTime").AsDateTime().NotNullable()
             .WithColumn("UpdatedTime").AsDateTime().NotNullable();
         
-        Create.PrimaryKey("PK_Order")
+        Create.Index("IX_Order_CreatedTime")
             .OnTable("Order")
-            .Columns("CombinedKey");
+            .OnColumn("CreatedTime").Ascending();
 
         Create.Table("Outbox")
             .WithColumn("Id").AsInt64().PrimaryKey().Unique().Identity()
@@ -38,6 +29,11 @@ public class AddOrderAndOutboxTable : Migration
             .WithColumn("ProcessedTime").AsDateTimeOffset().Nullable()
             .WithColumn("Status").AsInt16().NotNullable().WithDefaultValue((int)MessageStatus.Pending)
             .WithColumn("RetryCount").AsInt16().NotNullable().WithDefaultValue(0);
+        
+        Create.Index("IX_Outbox_Status_CreatedTime")
+            .OnTable("Outbox")
+            .OnColumn("Status").Ascending()
+            .OnColumn("CreatedTime").Ascending();
     }
 
     public override void Down()

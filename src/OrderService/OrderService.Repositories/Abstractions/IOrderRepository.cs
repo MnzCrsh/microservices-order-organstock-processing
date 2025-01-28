@@ -7,5 +7,5 @@ public interface IOrderRepository
 {
     public Task<OrderResponseItem> AddAsync(Order order);
     
-    public Task<OrderResponseItem> GetByIdAsync(long orderId);
+    public Task<OrderResponseItem> GetByIdAsync(Guid orderId);
 }
