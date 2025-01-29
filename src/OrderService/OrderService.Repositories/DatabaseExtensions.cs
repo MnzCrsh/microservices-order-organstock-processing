@@ -10,7 +10,7 @@ public static class DatabaseExtensions
         var dbConfig = new DbConfig();
         sqlSection.Bind(dbConfig);
         services.AddSingleton(dbConfig);
-        
+
         return services;
     }
 }

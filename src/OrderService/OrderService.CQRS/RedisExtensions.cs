@@ -9,14 +9,14 @@ public static class RedisExtensions
     public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
     {
         var redisSection = configuration.GetSection("Redis");
-        
+
         var redisConfig = new RedisConfig();
         redisSection.Bind(redisConfig);
         services.AddSingleton(redisConfig);
-        
+
         services
             .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
-        
+
         return services;
     }
 }

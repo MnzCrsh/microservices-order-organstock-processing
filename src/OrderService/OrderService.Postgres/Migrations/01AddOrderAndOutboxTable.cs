@@ -16,7 +16,7 @@ public class AddOrderAndOutboxTable : Migration
             .WithColumn("Items").AsCustom("JSON").NotNullable()
             .WithColumn("CreatedTime").AsDateTime().NotNullable()
             .WithColumn("UpdatedTime").AsDateTime().NotNullable();
-        
+
         Create.Index("IX_Order_CreatedTime")
             .OnTable("Order")
             .OnColumn("CreatedTime").Ascending();
@@ -29,7 +29,7 @@ public class AddOrderAndOutboxTable : Migration
             .WithColumn("ProcessedTime").AsDateTimeOffset().Nullable()
             .WithColumn("Status").AsInt16().NotNullable().WithDefaultValue((int)MessageStatus.Pending)
             .WithColumn("RetryCount").AsInt16().NotNullable().WithDefaultValue(0);
-        
+
         Create.Index("IX_Outbox_Status_CreatedTime")
             .OnTable("Outbox")
             .OnColumn("Status").Ascending()

@@ -6,16 +6,16 @@ namespace OrderService.Entities.Models.Entities;
 public record Order
 {
     public Guid Id { get; init; }
-    
+
     public Guid CustomerId { get; init; }
-    
+
     public Guid[] Items { get; init; } = null!;
 
     public decimal TotalAmount { get; init; }
-    
+
     public OrderStatus OrderStatus { get; init; }
 
     public DateTimeOffset CreatedTime { get; init; }
-    
+
     public DateTimeOffset UpdatedTime { get; init; }
 }
