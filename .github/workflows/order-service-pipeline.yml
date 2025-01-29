@@ -58,4 +58,4 @@ jobs:
         run: dotnet restore src/OrderService
 
       - name: Run dotnet format
-        run: dotnet format --check --folder src/OrderService
+        run: dotnet format --check
