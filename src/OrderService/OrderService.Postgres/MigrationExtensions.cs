@@ -13,7 +13,7 @@ public static class MigrationExtensions
         {
             throw new ArgumentNullException($"{connectionString} cannot be null or empty.");
         }
-        
+
         services
             .AddFluentMigratorCore()
             .ConfigureRunner(builder =>
@@ -24,7 +24,7 @@ public static class MigrationExtensions
                 .ScanIn(typeof(AddOrderAndOutboxTable).Assembly).For.Migrations();
         })
             .AddLogging(builder => builder.AddFluentMigratorConsole());
-        
+
         return services;
     }
 
@@ -32,9 +32,9 @@ public static class MigrationExtensions
     {
         using var scope = serviceProvider.CreateScope();
         var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-        
+
         runner.MigrateUp();
-        
+
         return scope.ServiceProvider;
-    } 
+    }
 }

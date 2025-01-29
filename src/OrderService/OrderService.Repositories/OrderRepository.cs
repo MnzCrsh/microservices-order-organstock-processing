@@ -28,9 +28,9 @@ public class OrderRepository : IOrderRepository
                                                   "UpdatedTime" 
                               """;
 
-        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ?? 
+        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, order) ??
                   throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
-        
+
         return res;
     }
 
@@ -41,7 +41,7 @@ public class OrderRepository : IOrderRepository
                              SET "OrderStatus" = @OrderStatus, "UpdatedTime" = @UpdatedTime
                              WHERE "Id" = @Id
                              """;
-        
+
         return await connection.ExecuteAsync(query, order) > 0;
     }
 
@@ -50,10 +50,10 @@ public class OrderRepository : IOrderRepository
         const string query = """
                              SELECT * FROM "Order" WHERE "Id" = @orderId;
                              """;
-        
-        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId) 
+
+        var res = await connection.QuerySingleOrDefaultAsync<OrderResponseItem>(query, orderId)
                   ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
-        
+
         return res;
     }
 }

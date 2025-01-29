@@ -24,10 +24,10 @@ public class OutboxRepository : IOutboxRepository
                                                    "Payload", "ProcessedTime",
                                                    "Status"
                              """;
-        
-        var res = await connection.QuerySingleOrDefaultAsync<OutboxResponseModel>(query, outboxMessage, transaction) ?? 
+
+        var res = await connection.QuerySingleOrDefaultAsync<OutboxResponseModel>(query, outboxMessage, transaction) ??
                   throw new ArgumentException($"Unable to save message with EventType:[{outboxMessage.EventType}]");
-        
+
         return res;
     }
 
@@ -38,7 +38,7 @@ public class OutboxRepository : IOutboxRepository
                              SET "Status" = @Status, "ProcessedTime" = @ProcessedTime
                              WHERE "Id" = @Id
                              """;
-        
+
         return await connection.ExecuteAsync(query, outboxMessage, transaction) > 0;
     }
 
@@ -47,9 +47,9 @@ public class OutboxRepository : IOutboxRepository
         const string query = """
                              SELECT * FROM "Outbox" WHERE "Status" = 1 LIMIT 250;
                              """;
-        
+
         var res = await connection.QueryAsync<OutboxResponseModel>(query, transaction);
-        
+
         return res;
     }
 }
