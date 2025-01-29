@@ -28,7 +28,7 @@ public class OrderCommandProcessor(IProducer<string, string> producer) : IOrderC
         // await producer.ProduceAsync("order-events", message);
         //
         // return orderCreatedEvent.OrderId;
-        
+
         throw new NotImplementedException();
     }
 }

@@ -7,8 +7,8 @@ namespace OrderService.Repositories.Abstractions;
 public interface IOrderRepository
 {
     public Task<OrderResponseItem> AddAsync(Order order, IDbConnection connection, IDbTransaction transaction);
-    
+
     public Task<bool> UpdateAsync(Order order, IDbConnection connection, IDbTransaction transaction);
-    
+
     public Task<OrderResponseItem> GetByIdAsync(Guid orderId, IDbConnection connection, IDbTransaction transaction);
 }

@@ -17,7 +17,7 @@ public static class KafkaExtensions
             };
             return new ProducerBuilder<string, string>(producerConfig).Build();
         });
-        
+
         return services;
     }
 }

@@ -10,11 +10,11 @@ public class TransactionHandler(IDbConnectionFactory connectionFactory)
     {
         using var connection = connectionFactory.CreateConnection();
         connection.Open();
-        
+
         using var transaction = connection.BeginTransaction((System.Data.IsolationLevel)IsolationLevel.ReadCommitted);
-        
+
         await action(connection, transaction);
-        
+
         transaction.Commit();
     }
 }
