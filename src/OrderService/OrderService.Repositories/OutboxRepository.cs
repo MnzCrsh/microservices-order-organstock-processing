@@ -1,14 +1,14 @@
+using System.Data;
 using Dapper;
 using OrderService.Entities.Models;
 using OrderService.Entities.Models.Responses;
+using OrderService.Repositories.Abstractions;
 
 namespace OrderService.Repositories;
 
-public class OutboxRepository(IDbConnectionFactory connectionFactory) : IOutboxRepository
+public class OutboxRepository : IOutboxRepository
 {
-    
-    
-    public async Task<OutboxResponseModel> SaveAsync(OutboxMessage outboxMessage)
+    public async Task<OutboxResponseModel> SaveAsync(OutboxMessage outboxMessage, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
                              INSERT INTO "Outbox" (
@@ -24,14 +24,14 @@ public class OutboxRepository(IDbConnectionFactory connectionFactory) : IOutboxR
                                                    "Payload", "ProcessedTime",
                                                    "Status"
                              """;
-        using var connection = connectionFactory.CreateConnection();
-        var res = await connection.QuerySingleOrDefaultAsync<OutboxResponseModel>(query, outboxMessage) ?? 
+        
+        var res = await connection.QuerySingleOrDefaultAsync<OutboxResponseModel>(query, outboxMessage, transaction) ?? 
                   throw new ArgumentException($"Unable to save message with EventType:[{outboxMessage.EventType}]");
         
         return res;
     }
 
-    public async Task<OutboxResponseModel> UpdateAsync(OutboxMessage outboxMessage)
+    public async Task<bool> UpdateAsync(OutboxMessage outboxMessage, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
                              UPDATE "Outbox"
@@ -39,21 +39,16 @@ public class OutboxRepository(IDbConnectionFactory connectionFactory) : IOutboxR
                              WHERE "Id" = @Id
                              """;
         
-        using var connection = connectionFactory.CreateConnection();
-        var res = await connection.QuerySingleOrDefaultAsync<OutboxResponseModel>(query, outboxMessage) ?? 
-                  throw new ArgumentException($"Unable to save message with EventType:[{outboxMessage.EventType}]");
-        
-        return res;
+        return await connection.ExecuteAsync(query, outboxMessage, transaction) > 0;
     }
 
-    public async Task<IEnumerable<OutboxResponseModel>?> FetchUnprocessedMessagesAsync()
+    public async Task<IEnumerable<OutboxResponseModel>?> FetchUnprocessedMessagesAsync(IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
                              SELECT * FROM "Outbox" WHERE "Status" = 1 LIMIT 250;
                              """;
         
-        using var connection = connectionFactory.CreateConnection();
-        var res = await connection.QuerySingleOrDefaultAsync<IEnumerable<OutboxResponseModel>>(query);
+        var res = await connection.QueryAsync<OutboxResponseModel>(query, transaction);
         
         return res;
     }

@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace OrderService.Repositories;
+namespace OrderService.Repositories.Abstractions;
 
 public interface IDbConnectionFactory
 {
