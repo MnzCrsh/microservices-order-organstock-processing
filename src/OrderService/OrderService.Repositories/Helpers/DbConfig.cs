@@ -1,4 +1,4 @@
-namespace OrderService.Repositories;
+namespace OrderService.Repositories.Helpers;
 
 public class DbConfig
 {

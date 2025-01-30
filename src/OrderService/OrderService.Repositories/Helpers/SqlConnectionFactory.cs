@@ -2,7 +2,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using OrderService.Repositories.Abstractions;
 
-namespace OrderService.Repositories;
+namespace OrderService.Repositories.Helpers;
 
 public class SqlConnectionFactory(DbConfig config) : IDbConnectionFactory
 {

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using OrderService.CQRS.Abstractions;
 using OrderService.Entities.Models.Responses;
 using StackExchange.Redis;
 
