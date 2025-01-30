@@ -9,7 +9,7 @@ public record Order
 
     public Guid CustomerId { get; init; }
 
-    public Guid[] Items { get; init; } = null!;
+    public string Items { get; init; } = null!;
 
     public decimal TotalAmount { get; init; }
 
