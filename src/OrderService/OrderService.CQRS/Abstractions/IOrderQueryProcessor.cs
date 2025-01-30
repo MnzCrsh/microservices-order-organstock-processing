@@ -1,6 +1,6 @@
 using OrderService.Entities.Models.Responses;
 
-namespace OrderService.CQRS;
+namespace OrderService.CQRS.Abstractions;
 
 public interface IOrderQueryProcessor
 {

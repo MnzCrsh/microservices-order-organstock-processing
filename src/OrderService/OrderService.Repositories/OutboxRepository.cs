@@ -1,14 +1,13 @@
 using System.Data;
 using Dapper;
-using OrderService.Entities.Models;
-using OrderService.Entities.Models.Responses;
+using OrderService.Entities.Models.Entities;
 using OrderService.Repositories.Abstractions;
 
 namespace OrderService.Repositories;
 
 public class OutboxRepository : IOutboxRepository
 {
-    public async Task<OutboxResponseModel> SaveAsync(OutboxMessage outboxMessage, IDbConnection connection, IDbTransaction transaction)
+    public async Task<OutboxMessage> AddAsync(OutboxMessage outboxMessage, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
                              INSERT INTO "Outbox" (
@@ -25,7 +24,7 @@ public class OutboxRepository : IOutboxRepository
                                                    "Status"
                              """;
 
-        var res = await connection.QuerySingleOrDefaultAsync<OutboxResponseModel>(query, outboxMessage, transaction) ??
+        var res = await connection.QuerySingleOrDefaultAsync<OutboxMessage>(query, outboxMessage, transaction) ??
                   throw new ArgumentException($"Unable to save message with EventType:[{outboxMessage.EventType}]");
 
         return res;
@@ -42,13 +41,13 @@ public class OutboxRepository : IOutboxRepository
         return await connection.ExecuteAsync(query, outboxMessage, transaction) > 0;
     }
 
-    public async Task<IEnumerable<OutboxResponseModel>?> FetchUnprocessedMessagesAsync(IDbConnection connection, IDbTransaction transaction)
+    public async Task<IEnumerable<OutboxMessage>?> FetchUnprocessedMessagesAsync(IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
                              SELECT * FROM "Outbox" WHERE "Status" = 1 LIMIT 250;
                              """;
 
-        var res = await connection.QueryAsync<OutboxResponseModel>(query, transaction);
+        var res = await connection.QueryAsync<OutboxMessage>(query, transaction);
 
         return res;
     }

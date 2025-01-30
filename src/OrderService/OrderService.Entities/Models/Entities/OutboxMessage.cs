@@ -1,4 +1,4 @@
-namespace OrderService.Entities.Models;
+namespace OrderService.Entities.Models.Entities;
 
 public record OutboxMessage
 {
@@ -8,9 +8,9 @@ public record OutboxMessage
 
     public string Payload { get; init; } = null!;
 
-    public DateTime CreatedTime { get; init; }
+    public DateTimeOffset CreatedTime { get; init; }
 
-    public DateTime ProcessedTime { get; init; }
+    public DateTimeOffset? ProcessedTime { get; init; }
 
     public MessageStatus Status { get; init; }
 

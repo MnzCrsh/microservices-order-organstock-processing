@@ -10,6 +10,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Postgres", "Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Repositories", "OrderService.Repositories\OrderService.Repositories.csproj", "{1F300447-60FC-4C34-9196-36A26054B8AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Mapping", "OrderService.Mapping\OrderService.Mapping.csproj", "{D98157B2-6B86-4F74-BDBB-A4030BB9918B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Application", "OrderService.Application\OrderService.Application.csproj", "{87D48A6B-337F-4F13-A978-A5001D04415F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Validation", "OrderService.Validation\OrderService.Validation.csproj", "{0C24DEAA-891C-4954-876A-3986B7085B1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +42,17 @@ Global
 		{1F300447-60FC-4C34-9196-36A26054B8AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F300447-60FC-4C34-9196-36A26054B8AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F300447-60FC-4C34-9196-36A26054B8AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D98157B2-6B86-4F74-BDBB-A4030BB9918B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D98157B2-6B86-4F74-BDBB-A4030BB9918B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D98157B2-6B86-4F74-BDBB-A4030BB9918B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D98157B2-6B86-4F74-BDBB-A4030BB9918B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87D48A6B-337F-4F13-A978-A5001D04415F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D48A6B-337F-4F13-A978-A5001D04415F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D48A6B-337F-4F13-A978-A5001D04415F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D48A6B-337F-4F13-A978-A5001D04415F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C24DEAA-891C-4954-876A-3986B7085B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C24DEAA-891C-4954-876A-3986B7085B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C24DEAA-891C-4954-876A-3986B7085B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C24DEAA-891C-4954-876A-3986B7085B1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

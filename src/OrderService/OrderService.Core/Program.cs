@@ -1,7 +1,9 @@
+using OrderService.Application;
 using OrderService.Core;
 using OrderService.CQRS;
+using OrderService.Mapping;
 using OrderService.Postgres;
-using OrderService.Repositories;
+using OrderService.Repositories.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +17,12 @@ var postgresConfig = builder.Configuration.GetSection("Postgres");
 builder.Services
     .AddOpenApi()
     .AddMigrations(postgresConfig["ConnectionString"])
-    .AddSqlConnection(postgresConfig)
-    .AddKafkaProducers(kafkaConfig);
-// .AddRedis(builder.Configuration);
+    .AddRepositoriesModule(postgresConfig)
+    .AddKafkaProducers(kafkaConfig)
+    .AddMappingModule()
+    .AddApplicationServicesModule()
+    .AddRedis(builder.Configuration);
 
-builder.Services
-    .AddScoped<IOrderCommandProcessor, OrderCommandProcessor>();
 
 var app = builder.Build();
 
