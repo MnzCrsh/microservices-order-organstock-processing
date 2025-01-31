@@ -17,9 +17,9 @@ public class OrderCommandProcessor(IOrderService orderService,
         logger.LogInformation("Execute Create order command");
 
         logger.LogInformation("Execute Create order command validation");
-        
+
         var validationResult = creationValidator.Validate(command);
-        
+
         if (validationResult.IsValid)
         {
             logger.LogInformation("Validation result is valid");
@@ -39,7 +39,7 @@ public class OrderCommandProcessor(IOrderService orderService,
         logger.LogInformation("Execute Update order command");
 
         logger.LogInformation("Execute Update order command validation");
-        
+
         var validationResult = updateValidator.Validate(command);
 
         if (validationResult.IsValid)
@@ -47,12 +47,12 @@ public class OrderCommandProcessor(IOrderService orderService,
             logger.LogInformation("Validation result is valid");
             return (await orderService.UpdateAsync(command), null);
         }
-        
+
         foreach (var error in validationResult.Errors)
         {
             logger.LogWarning("Validation Error {Error}", error.ErrorMessage);
         }
-        
+
         return (false, validationResult.Errors);
     }
 }

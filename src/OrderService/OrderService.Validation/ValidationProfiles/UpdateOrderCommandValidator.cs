@@ -8,7 +8,7 @@ public class UpdateOrderCommandValidator(IOrderService orderService) : Validator
     protected override async Task ValidateEntity(UpdateOrderCommand entity, IList<ValidationError> errors)
     {
         var entityFromDb = await orderService.GetByIdAsync(entity.Id);
-        if (entity.OrderStatus < entityFromDb.Status )
+        if (entity.OrderStatus < entityFromDb.Status)
         {
             errors.Add(new ValidationError(nameof(entity.OrderStatus), "Invalid status transition"));
         }

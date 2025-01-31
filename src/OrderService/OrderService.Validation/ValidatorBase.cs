@@ -30,6 +30,6 @@ public abstract class ValidatorBase<T> : IValidator<T>
             Errors = errors
         };
     }
-    
+
     protected abstract Task ValidateEntity(T entity, IList<ValidationError> errors);
 }

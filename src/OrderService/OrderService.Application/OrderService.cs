@@ -26,10 +26,10 @@ public class OrderService(IOrderRepository orderRepository,
             {
                 var order = orderCommandMapper.Map(command);
                 var orderResult = await orderRepository.AddAsync(order, connection, dbTransaction);
-                
+
                 var message = outboxMapper.Map(command);
                 await outboxRepository.AddAsync(message, connection, dbTransaction);
-                
+
                 return orderResult;
             });
 

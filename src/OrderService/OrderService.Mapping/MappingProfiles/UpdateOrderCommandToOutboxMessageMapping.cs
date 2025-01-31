@@ -7,12 +7,12 @@ namespace OrderService.Mapping.MappingProfiles;
 
 public class UpdateOrderCommandToOutboxMessageMapping : IMapper<UpdateOrderCommand, OutboxMessage>
 {
-    public OutboxMessage Map(UpdateOrderCommand source) 
+    public OutboxMessage Map(UpdateOrderCommand source)
         => new()
-    {
-        Id = Guid.CreateVersion7(),
-        EventType = nameof(UpdateOrderCommand),
-        Payload = JsonSerializer.Serialize(source),
-        Status = MessageStatus.Pending,
-    };
+        {
+            Id = Guid.CreateVersion7(),
+            EventType = nameof(UpdateOrderCommand),
+            Payload = JsonSerializer.Serialize(source),
+            Status = MessageStatus.Pending,
+        };
 }

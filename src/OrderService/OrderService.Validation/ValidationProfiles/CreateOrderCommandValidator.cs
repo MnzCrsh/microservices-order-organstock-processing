@@ -23,7 +23,7 @@ public class CreateOrderCommandValidator : ValidatorBase<CreateOrderCommand>
                 $"Items must be between {OrderConstants.MinTotalAmount} and {OrderConstants.MaxTotalAmount}"));
 
         }
-        
+
         return Task.CompletedTask;
     }
 }

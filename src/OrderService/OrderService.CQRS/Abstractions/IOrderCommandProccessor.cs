@@ -7,6 +7,6 @@ namespace OrderService.CQRS.Abstractions;
 public interface IOrderCommandProcessor
 {
     public Task<(OrderResponseItem?, List<ValidationError>?)> ExecuteCreateAsync(CreateOrderCommand command);
-    
+
     public Task<(bool, List<ValidationError>?)> ExecuteUpdateAsync(UpdateOrderCommand command);
 }
