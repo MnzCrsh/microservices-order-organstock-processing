@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\OrderService.Application\OrderService.Application.csproj" />
       <ProjectReference Include="..\OrderService.Entities\OrderService.Entities.csproj" />
+      <ProjectReference Include="..\OrderService.Validation\OrderService.Validation.csproj" />
     </ItemGroup>
 
     <ItemGroup>

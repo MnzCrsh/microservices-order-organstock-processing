@@ -5,16 +5,14 @@ using OrderService.Entities.Models.Entities;
 
 namespace OrderService.Mapping.MappingProfiles;
 
-public class OrderCommandToOutboxMessageMapping : IMapper<CreateOrderCommand, OutboxMessage>
+public class UpdateOrderCommandToOutboxMessageMapping : IMapper<UpdateOrderCommand, OutboxMessage>
 {
-    public OutboxMessage Map(CreateOrderCommand source)
+    public OutboxMessage Map(UpdateOrderCommand source)
         => new()
         {
             Id = Guid.CreateVersion7(),
-            EventType = nameof(CreateOrderCommand),
+            EventType = nameof(UpdateOrderCommand),
             Payload = JsonSerializer.Serialize(source),
-            CreatedTime = DateTimeOffset.UtcNow,
             Status = MessageStatus.Pending,
-            RetryCount = 0
         };
 }

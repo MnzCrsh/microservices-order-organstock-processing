@@ -8,5 +8,7 @@ public record OrderResponseItem
 
     public Guid[] Items { get; init; } = null!;
 
+    public OrderStatus Status { get; init; }
+
     public decimal TotalAmount { get; init; }
 }

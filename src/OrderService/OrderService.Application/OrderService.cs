@@ -14,19 +14,22 @@ public class OrderService(IOrderRepository orderRepository,
     IMapper<CreateOrderCommand, Order> orderCommandMapper,
     IMapper<CreateOrderCommand, OutboxMessage> outboxMapper,
     IMapper<Order, OrderResponseItem> orderResponseMapper,
+    IMapper<UpdateOrderCommand, Order> updateOrderMapper,
+    IMapper<UpdateOrderCommand, OutboxMessage> updateOutboxMapper,
     ILogger<OrderService> logger) : IOrderService
 {
     public async Task<OrderResponseItem> CreateAsync(CreateOrderCommand command)
     {
         try
         {
-            var order = orderCommandMapper.Map(command);
-            var message = outboxMapper.Map(command);
-
             var transactionRes = await transaction.ExecuteAsync(async (connection, dbTransaction) =>
             {
+                var order = orderCommandMapper.Map(command);
                 var orderResult = await orderRepository.AddAsync(order, connection, dbTransaction);
+
+                var message = outboxMapper.Map(command);
                 await outboxRepository.AddAsync(message, connection, dbTransaction);
+
                 return orderResult;
             });
 
@@ -35,7 +38,31 @@ public class OrderService(IOrderRepository orderRepository,
         }
         catch (Exception e)
         {
-            logger.LogError("An error occured while adding new Order. {1}", e);
+            logger.LogError("An error occured while adding new Order. {Error}", e);
+            throw;
+        }
+    }
+
+    public async Task<bool> UpdateAsync(UpdateOrderCommand command)
+    {
+        try
+        {
+            var transactionRes = await transaction.ExecuteAsync(async (connection, dbTransaction) =>
+            {
+                var orderUpdate = updateOrderMapper.Map(command);
+                var updateResult = await orderRepository.UpdateAsync(orderUpdate, connection, dbTransaction);
+
+                var outboxUpdate = updateOutboxMapper.Map(command);
+                await outboxRepository.AddAsync(outboxUpdate, connection, dbTransaction);
+
+                return updateResult;
+            });
+
+            return transactionRes;
+        }
+        catch (Exception e)
+        {
+            logger.LogError("An error occured while updating Order with ID[{Id}]. {Error}", command.Id, e);
             throw;
         }
     }
@@ -51,7 +78,7 @@ public class OrderService(IOrderRepository orderRepository,
         }
         catch (Exception e)
         {
-            logger.LogError("An error occured while fetching Order with ID:[{1}]. {2}", id, e);
+            logger.LogError("An error occured while fetching Order with ID:[{Id}]. {Error}", id, e);
             throw;
         }
     }
@@ -67,7 +94,7 @@ public class OrderService(IOrderRepository orderRepository,
         }
         catch (Exception e)
         {
-            logger.LogError("An error occured while fetching Top 3 Ordered items. {1}", e);
+            logger.LogError("An error occured while fetching Top 3 Ordered items. {Error}", e);
             throw;
         }
     }
