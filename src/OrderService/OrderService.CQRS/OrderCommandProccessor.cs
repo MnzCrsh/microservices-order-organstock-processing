@@ -9,6 +9,7 @@ namespace OrderService.CQRS;
 
 public class OrderCommandProcessor(IOrderService orderService,
     IValidator<CreateOrderCommand> creationValidator,
+    IValidator<UpdateOrderCommand> updateValidator,
     ILogger<OrderCommandProcessor> logger) : IOrderCommandProcessor
 {
     public async Task<(OrderResponseItem?, List<ValidationError>?)> ExecuteCreateAsync(CreateOrderCommand command)
@@ -33,8 +34,25 @@ public class OrderCommandProcessor(IOrderService orderService,
         return (null, validationResult.Errors);
     }
 
-    public Task<(OrderResponseItem?, List<ValidationError>?)> ExecuteUpdateAsync(CreateOrderCommand command)
+    public async Task<(bool, List<ValidationError>?)> ExecuteUpdateAsync(UpdateOrderCommand command)
     {
-        throw new NotImplementedException();
+        logger.LogInformation("Execute Update order command");
+
+        logger.LogInformation("Execute Update order command validation");
+        
+        var validationResult = updateValidator.Validate(command);
+
+        if (validationResult.IsValid)
+        {
+            logger.LogInformation("Validation result is valid");
+            return (await orderService.UpdateAsync(command), null);
+        }
+        
+        foreach (var error in validationResult.Errors)
+        {
+            logger.LogWarning("Validation Error {Error}", error.ErrorMessage);
+        }
+        
+        return (false, validationResult.Errors);
     }
 }

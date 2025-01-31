@@ -11,8 +11,8 @@ public static class MappingExtensions
     public static IServiceCollection AddMappingModule(this IServiceCollection services)
     {
         services
-            .AddScoped<IMapper<CreateOrderCommand, Order>, CommandToOrderMapping>()
-            .AddScoped<IMapper<CreateOrderCommand, OutboxMessage>, OrderCommandToOutboxMessageMapping>()
+            .AddScoped<IMapper<CreateOrderCommand, Order>, CreateOrderCommandToOrderMapping>()
+            .AddScoped<IMapper<CreateOrderCommand, OutboxMessage>, CreateOrderCommandToOutboxMessageMapping>()
             .AddScoped<IMapper<Order, OrderResponseItem>, OrderToResponseMapping>();
 
         return services;

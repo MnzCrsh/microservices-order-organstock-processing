@@ -8,5 +8,5 @@ public interface IOrderCommandProcessor
 {
     public Task<(OrderResponseItem?, List<ValidationError>?)> ExecuteCreateAsync(CreateOrderCommand command);
     
-    public Task<(OrderResponseItem?, List<ValidationError>?)> ExecuteUpdateAsync(CreateOrderCommand command);
+    public Task<(bool, List<ValidationError>?)> ExecuteUpdateAsync(UpdateOrderCommand command);
 }

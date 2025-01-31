@@ -5,7 +5,7 @@ using OrderService.Entities.Models.Entities;
 
 namespace OrderService.Mapping.MappingProfiles;
 
-public class OrderCommandToOutboxMessageMapping : IMapper<CreateOrderCommand, OutboxMessage>
+public class CreateOrderCommandToOutboxMessageMapping : IMapper<CreateOrderCommand, OutboxMessage>
 {
     public OutboxMessage Map(CreateOrderCommand source)
         => new()

@@ -5,7 +5,7 @@ using OrderService.Entities.Models.Entities;
 
 namespace OrderService.Mapping.MappingProfiles;
 
-public class CommandToOrderMapping : IMapper<CreateOrderCommand, Order>
+public class CreateOrderCommandToOrderMapping : IMapper<CreateOrderCommand, Order>
 {
     private static Order CreateOrderFromCommand(CreateOrderCommand command)
         => new()
