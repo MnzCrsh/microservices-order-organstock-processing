@@ -28,7 +28,7 @@ public class OrderCommandProcessor(IOrderService orderService,
 
         foreach (var error in validationResult.Errors)
         {
-            logger.LogWarning("Validation Error {Error}", error.ErrorMessage);
+            logger.LogWarning("Validation Error {Error} in property {Property}", error.ErrorMessage, error.PropertyName);
         }
 
         return (null, validationResult.Errors);
@@ -50,7 +50,7 @@ public class OrderCommandProcessor(IOrderService orderService,
 
         foreach (var error in validationResult.Errors)
         {
-            logger.LogWarning("Validation Error {Error}", error.ErrorMessage);
+            logger.LogWarning("Validation Error {Error} in property {Property}", error.ErrorMessage, error.PropertyName);
         }
 
         return (false, validationResult.Errors);

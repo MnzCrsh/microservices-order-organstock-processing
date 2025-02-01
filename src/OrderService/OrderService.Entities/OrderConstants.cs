@@ -1,5 +1,8 @@
 namespace OrderService.Entities;
 
+/// <summary>
+/// Order related constants
+/// </summary>
 public static class OrderConstants
 {
     public const int MaxItemsPerOrder = 100;

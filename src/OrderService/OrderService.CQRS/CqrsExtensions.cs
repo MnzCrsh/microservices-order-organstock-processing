@@ -4,9 +4,14 @@ using StackExchange.Redis;
 
 namespace OrderService.CQRS;
 
-public static class RedisExtensions
+public static class CqrsExtensions
 {
-    public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
+    /// <summary>
+    /// Adds CQRS module
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="configuration">Configuration</param>
+    public static IServiceCollection AddCqrs(this IServiceCollection services, IConfiguration configuration)
     {
         var redisSection = configuration.GetSection("Redis");
 
