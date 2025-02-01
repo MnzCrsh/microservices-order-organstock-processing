@@ -2,7 +2,7 @@ using Confluent.Kafka;
 
 namespace OrderService.Core;
 
-public static class KafkaExtensions
+public static class CoreExtensions
 {
     public static IServiceCollection AddKafkaProducers(this IServiceCollection services, IConfigurationSection kafkaConfig)
     {

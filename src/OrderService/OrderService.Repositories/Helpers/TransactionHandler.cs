@@ -8,7 +8,7 @@ namespace OrderService.Repositories.Helpers;
 /// Used for wrapping repositories inside transaction and passing it inside.
 /// </summary>
 /// <param name="connectionFactory">Factory for instantiating connection</param>
-public class TransactionHandler(IDbConnectionFactory connectionFactory)
+public class TransactionHandler(IDbConnectionFactory connectionFactory) : ITransactionHandler
 {
     /// <summary>
     /// Starts transaction 

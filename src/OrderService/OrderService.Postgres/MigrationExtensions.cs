@@ -7,6 +7,11 @@ namespace OrderService.Postgres;
 
 public static class MigrationExtensions
 {
+    /// <summary>
+    /// Adds module with postgres migrations
+    /// </summary>
+    /// <param name="services">Service collection</param>
+    /// <param name="connectionString">Connection string</param>
     public static IServiceCollection AddMigrations(this IServiceCollection services, string? connectionString)
     {
         if (connectionString.IsNullOrEmpty())
@@ -28,6 +33,10 @@ public static class MigrationExtensions
         return services;
     }
 
+    /// <summary>
+    /// Starts FluentMigrator migrations
+    /// </summary>
+    /// <param name="serviceProvider">Service collection</param>
     public static IServiceProvider RunMigrations(this IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();

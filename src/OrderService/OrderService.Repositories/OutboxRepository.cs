@@ -5,8 +5,10 @@ using OrderService.Repositories.Abstractions;
 
 namespace OrderService.Repositories;
 
+/// <inheritdoc/>
 public class OutboxRepository : IOutboxRepository
 {
+    /// <inheritdoc/>
     public async Task<OutboxMessage> AddAsync(OutboxMessage outboxMessage, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
@@ -30,6 +32,7 @@ public class OutboxRepository : IOutboxRepository
         return res;
     }
 
+    /// <inheritdoc/>
     public async Task<bool> UpdateAsync(OutboxMessage outboxMessage, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
@@ -41,6 +44,7 @@ public class OutboxRepository : IOutboxRepository
         return await connection.ExecuteAsync(query, outboxMessage, transaction) > 0;
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<OutboxMessage>?> FetchUnprocessedMessagesAsync(IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """

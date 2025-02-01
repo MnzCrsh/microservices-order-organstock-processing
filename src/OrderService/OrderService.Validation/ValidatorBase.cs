@@ -1,8 +1,10 @@
 namespace OrderService.Validation;
 
+/// <inheritdoc/>
 public abstract class ValidatorBase<T> : IValidator<T>
     where T : class
 {
+    /// <inheritdoc/>
     public virtual bool IsValid(T entity)
     {
         if (entity == null)
@@ -14,6 +16,7 @@ public abstract class ValidatorBase<T> : IValidator<T>
         return validationResult.IsValid;
     }
 
+    /// <inheritdoc/>
     public virtual ValidationResult Validate(T entity)
     {
         if (entity == null)
@@ -31,5 +34,10 @@ public abstract class ValidatorBase<T> : IValidator<T>
         };
     }
 
+    /// <summary>
+    /// Internal implementation of entity by derived class 
+    /// </summary>
+    /// <param name="entity">Request</param>
+    /// <param name="errors">Aggregated errors</param>
     protected abstract Task ValidateEntity(T entity, IList<ValidationError> errors);
 }

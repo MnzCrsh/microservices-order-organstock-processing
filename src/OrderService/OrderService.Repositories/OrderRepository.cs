@@ -5,8 +5,10 @@ using OrderService.Repositories.Abstractions;
 
 namespace OrderService.Repositories;
 
+/// <inheritdoc/>
 public class OrderRepository : IOrderRepository
 {
+    /// <inheritdoc/>
     public async Task<Order> AddAsync(Order order, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
@@ -33,6 +35,7 @@ public class OrderRepository : IOrderRepository
         return res;
     }
 
+    /// <inheritdoc/>
     public async Task<bool> UpdateAsync(Order order, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
@@ -56,6 +59,7 @@ public class OrderRepository : IOrderRepository
         return res;
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<Guid>> GetTopThreeItems(IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """

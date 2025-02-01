@@ -21,7 +21,7 @@ builder.Services
     .AddKafkaProducers(kafkaConfig)
     .AddMappingModule()
     .AddApplicationServicesModule()
-    .AddRedis(builder.Configuration);
+    .AddCqrs(builder.Configuration);
 
 
 var app = builder.Build();
