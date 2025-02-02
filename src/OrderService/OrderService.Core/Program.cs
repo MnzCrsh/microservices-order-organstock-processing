@@ -13,6 +13,7 @@ var config = new ConfigurationBuilder()
 
 var kafkaConfig = builder.Configuration.GetSection("Kafka");
 var postgresConfig = builder.Configuration.GetSection("Postgres");
+var outboxConfig = builder.Configuration.GetSection("Outbox");
 
 builder.Services
     .AddOpenApi()
@@ -20,7 +21,7 @@ builder.Services
     .AddRepositoriesModule(postgresConfig)
     .AddKafkaProducers(kafkaConfig)
     .AddMappingModule()
-    .AddApplicationServicesModule()
+    .AddApplicationServicesModule(outboxConfig)
     .AddCqrs(builder.Configuration);
 
 

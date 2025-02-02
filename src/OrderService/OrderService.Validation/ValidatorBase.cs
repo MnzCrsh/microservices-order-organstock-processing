@@ -39,5 +39,5 @@ public abstract class ValidatorBase<T> : IValidator<T>
     /// </summary>
     /// <param name="entity">Request</param>
     /// <param name="errors">Aggregated errors</param>
-    protected abstract Task ValidateEntity(T entity, IList<ValidationError> errors);
+    protected abstract ValueTask ValidateEntity(T entity, IList<ValidationError> errors);
 }

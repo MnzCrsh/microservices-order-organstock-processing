@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using OrderService.Application;
+using OrderService.Application.Abstractions;
 using OrderService.CQRS.Abstractions;
 using OrderService.Entities.Models.Commands;
 using OrderService.Entities.Models.Responses;
