@@ -1,18 +1,19 @@
 using OrderService.Application;
-using OrderService.Core;
 using OrderService.CQRS;
 using OrderService.Mapping;
+using OrderService.OutboxDaemon;
 using OrderService.Postgres;
 using OrderService.Repositories.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var config = new ConfigurationBuilder()
+new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false)
     .Build();
 
 var kafkaConfig = builder.Configuration.GetSection("Kafka");
 var postgresConfig = builder.Configuration.GetSection("Postgres");
+var outboxConfig = builder.Configuration.GetSection("Outbox");
 
 builder.Services
     .AddOpenApi()
@@ -20,7 +21,8 @@ builder.Services
     .AddRepositoriesModule(postgresConfig)
     .AddKafkaProducers(kafkaConfig)
     .AddMappingModule()
-    .AddApplicationServicesModule()
+    .AddApplicationServicesModule(outboxConfig)
+    .AddOutboxDaemon()
     .AddCqrs(builder.Configuration);
 
 

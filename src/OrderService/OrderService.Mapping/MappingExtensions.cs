@@ -13,7 +13,8 @@ public static class MappingExtensions
         services
             .AddScoped<IMapper<CreateOrderCommand, Order>, CreateOrderCommandToOrderMapping>()
             .AddScoped<IMapper<CreateOrderCommand, OutboxMessage>, CreateOrderCommandToOutboxMessageMapping>()
-            .AddScoped<IMapper<Order, OrderResponseItem>, OrderToResponseMapping>();
+            .AddScoped<IMapper<Order, OrderResponseItem>, OrderToResponseMapping>()
+            .AddScoped<IMapper<OutboxMessage, OutboxResponseModel>, OutboxMessageToOutboxMessageResponse>();
 
         services.AddScoped<IMapperFactory, MapperFactory>();
 

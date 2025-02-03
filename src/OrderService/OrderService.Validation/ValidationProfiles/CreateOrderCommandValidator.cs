@@ -5,7 +5,7 @@ namespace OrderService.Validation.ValidationProfiles;
 
 public class CreateOrderCommandValidator : ValidatorBase<CreateOrderCommand>
 {
-    protected override Task ValidateEntity(CreateOrderCommand entity, IList<ValidationError> errors)
+    protected override ValueTask ValidateEntity(CreateOrderCommand entity, IList<ValidationError> errors)
     {
         if (entity.CustomerId == Guid.Empty)
         {
@@ -24,6 +24,6 @@ public class CreateOrderCommandValidator : ValidatorBase<CreateOrderCommand>
 
         }
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

@@ -1,7 +1,7 @@
 using OrderService.Entities.Models.Commands;
 using OrderService.Entities.Models.Responses;
 
-namespace OrderService.Application;
+namespace OrderService.Application.Abstractions;
 
 /// <summary>
 /// Order service

@@ -11,6 +11,12 @@ public interface ITransactionHandler
     /// Starts transaction 
     /// </summary>
     /// <param name="action">Passed repository delegate</param>
+    public Task ExecuteAsync(Func<IDbConnection, IDbTransaction, Task> action);
+
+    /// <summary>
+    /// Starts transaction 
+    /// </summary>
+    /// <param name="action">Passed repository delegate</param>
     /// <typeparam name="T">Transaction result</typeparam>
     public Task<T> ExecuteAsync<T>(Func<IDbConnection, IDbTransaction, Task<T>> action);
 

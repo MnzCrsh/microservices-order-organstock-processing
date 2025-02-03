@@ -10,6 +10,27 @@ namespace OrderService.Repositories.Helpers;
 /// <param name="connectionFactory">Factory for instantiating connection</param>
 public class TransactionHandler(IDbConnectionFactory connectionFactory) : ITransactionHandler
 {
+    /// <inheritdoc/>
+    public async Task ExecuteAsync(Func<IDbConnection, IDbTransaction, Task> action)
+    {
+        using var connection = connectionFactory.CreateConnection();
+        connection.Open();
+
+        using var transaction = connection.BeginTransaction((System.Data.IsolationLevel)IsolationLevel.ReadCommitted);
+
+        try
+        {
+            await action(connection, transaction);
+
+            transaction.Commit();
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            throw new ApplicationException("Transaction failed.", ex);
+        }
+    }
+
     /// <summary>
     /// Starts transaction 
     /// </summary>
