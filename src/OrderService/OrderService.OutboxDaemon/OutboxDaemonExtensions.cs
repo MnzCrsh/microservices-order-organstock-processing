@@ -6,7 +6,7 @@ public static class OutboxDaemonExtensions
 {
     public static IServiceCollection AddOutboxDaemon(this IServiceCollection services)
     {
-        // services.AddHostedService<>()
+        services.AddHostedService<OutboxDaemon>();
         return services;
     }
 }

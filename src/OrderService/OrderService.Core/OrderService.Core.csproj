@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\OrderService.CQRS\OrderService.CQRS.csproj" />
+      <ProjectReference Include="..\OrderService.OutboxDaemon\OrderService.OutboxDaemon.csproj" />
       <ProjectReference Include="..\OrderService.Postgres\OrderService.Postgres.csproj" />
       <ProjectReference Include="..\OrderService.Repositories\OrderService.Repositories.csproj" />
     </ItemGroup>

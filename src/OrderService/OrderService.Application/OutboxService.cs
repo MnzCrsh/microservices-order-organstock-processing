@@ -23,7 +23,8 @@ public class OutboxService(
     {
         await transactionHandler.ExecuteAsync(async (conn, transaction) =>
         {
-            var outboxMessages = await repository.FetchMessagesByStatusAsync(config.BatchSize, MessageStatus.Pending, conn, transaction);
+            var outboxMessages = await repository.FetchMessagesByStatusAsync(
+                config.BatchSize, MessageStatus.Pending, conn, transaction);
 
             var messages = outboxMessages.ToList();
             if (messages.Count <= 0)
