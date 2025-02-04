@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using OrderService.Application;
 using OrderService.CQRS;
@@ -30,16 +31,12 @@ builder.Services
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(5000, listenOptions =>
+    options.Listen(IPAddress.Any, 5000, listenOptions =>
     {
         listenOptions.Protocols = HttpProtocols.Http2;
-        // listenOptions.Use(async context =>
-        // {
-        //     var remoteIp
-        // })
     });
-    
-    options.ListenAnyIP(5001, listenOptions =>
+
+    options.Listen(IPAddress.Any, 5001, listenOptions =>
     {
         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
         listenOptions.UseHttps();
@@ -48,6 +45,22 @@ builder.WebHost.ConfigureKestrel(options =>
 
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    var allowedIps = builder.Configuration.GetSection("AllowedIps").Get<string[]>();
+    var remoteIp = context.Connection.RemoteIpAddress?.ToString();
+
+    if (allowedIps!.Contains(remoteIp))
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsync("Forbidden");
+        context.Abort();
+        return;
+    }
+
+    await next();
+});
 
 app.UseRouting();
 app.Services.RunMigrations();

@@ -13,7 +13,7 @@ public static class GrpcExtensions
         });
 
         services.AddScoped<OrderGrpcService>();
-        
+
         return services;
     }
 }

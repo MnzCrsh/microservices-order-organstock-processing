@@ -4,5 +4,5 @@ namespace OrderService.gRPC;
 
 public class GrpcExceptionInterceptor : Interceptor
 {
-    
+
 }

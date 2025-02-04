@@ -24,7 +24,7 @@ public static class DecimalConverter
             scale: scale
         );
     }
-    
+
     /// <summary>
     /// Splits decimal into components for protobuf serialization
     /// </summary>
@@ -32,7 +32,7 @@ public static class DecimalConverter
     public static (ulong lo, uint hi, int signScale) ToProtobuf(decimal value)
     {
         var bits = decimal.GetBits(value);
-        
+
         int loPart = bits[0];
         int midPart = bits[1];
         int hiPart = bits[2];
