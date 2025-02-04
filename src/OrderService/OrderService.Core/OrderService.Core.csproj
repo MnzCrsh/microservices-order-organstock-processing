@@ -8,11 +8,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\OrderService.CQRS\OrderService.CQRS.csproj" />
+      <ProjectReference Include="..\OrderService.gRPC\OrderService.gRPC.csproj" />
       <ProjectReference Include="..\OrderService.OutboxDaemon\OrderService.OutboxDaemon.csproj" />
       <ProjectReference Include="..\OrderService.Postgres\OrderService.Postgres.csproj" />
       <ProjectReference Include="..\OrderService.Repositories\OrderService.Repositories.csproj" />

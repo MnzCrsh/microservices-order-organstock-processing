@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Validation", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.OutboxDaemon", "OrderService.OutboxDaemon\OrderService.OutboxDaemon.csproj", "{D591C559-83BE-41E6-B75C-F3E8278A8D7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.gRPC", "OrderService.gRPC\OrderService.gRPC.csproj", "{EC53E275-3A33-483E-8CC1-C1A8592B4385}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{D591C559-83BE-41E6-B75C-F3E8278A8D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D591C559-83BE-41E6-B75C-F3E8278A8D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D591C559-83BE-41E6-B75C-F3E8278A8D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC53E275-3A33-483E-8CC1-C1A8592B4385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC53E275-3A33-483E-8CC1-C1A8592B4385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC53E275-3A33-483E-8CC1-C1A8592B4385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC53E275-3A33-483E-8CC1-C1A8592B4385}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
