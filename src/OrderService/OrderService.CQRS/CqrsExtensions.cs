@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderService.CQRS.Abstractions;
 using StackExchange.Redis;
 
 namespace OrderService.CQRS;
@@ -19,8 +20,10 @@ public static class CqrsExtensions
         redisSection.Bind(redisConfig);
         services.AddSingleton(redisConfig);
 
-        services
-            .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
+        services.AddScoped<IOrderCommandProcessor, OrderCommandProcessor>();
+        
+        // services
+        //     .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
 
         return services;
     }

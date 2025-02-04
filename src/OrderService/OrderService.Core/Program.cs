@@ -20,8 +20,9 @@ var outboxConfig = builder.Configuration.GetSection("Outbox");
 
 builder.Services
     .AddOpenApi()
-    .AddMigrations(postgresConfig["ConnectionString"])
-    .AddRepositoriesModule(postgresConfig)
+    .AddMigrations(postgresConfig["ConnectionString"]!)
+    .AddRepositoriesModule()
+    .RegisterSqlConnection(postgresConfig)
     .AddKafkaProducers(kafkaConfig)
     .AddMappingModule()
     .AddApplicationServicesModule(outboxConfig)
@@ -74,3 +75,7 @@ app.UseHttpsRedirection();
 
 app.Run();
 
+/// <summary>
+/// Used as work-around for unit tests
+/// </summary>
+public partial class Program;

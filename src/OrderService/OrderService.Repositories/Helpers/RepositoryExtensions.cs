@@ -6,20 +6,18 @@ namespace OrderService.Repositories.Helpers;
 
 public static class RepositoryExtensions
 {
-    public static IServiceCollection AddRepositoriesModule(this IServiceCollection services, IConfigurationSection sqlSection)
+    public static IServiceCollection AddRepositoriesModule(this IServiceCollection services)
     {
         services
             .AddScoped<IOrderRepository, OrderRepository>()
             .AddScoped<IOutboxRepository, OutboxRepository>()
             .AddScoped<IDbConnectionFactory, SqlConnectionFactory>()
             .AddScoped<ITransactionHandler, TransactionHandler>();
-
-        services.RegisterSqlConnection(sqlSection);
-
+        
         return services;
     }
 
-    private static IServiceCollection RegisterSqlConnection(this IServiceCollection services, IConfigurationSection sqlSection)
+    public static IServiceCollection RegisterSqlConnection(this IServiceCollection services, IConfigurationSection sqlSection)
     {
         var dbConfig = new DbConfig();
         sqlSection.Bind(dbConfig);

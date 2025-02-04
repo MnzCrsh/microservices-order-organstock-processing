@@ -12,13 +12,8 @@ public static class MigrationExtensions
     /// </summary>
     /// <param name="services">Service collection</param>
     /// <param name="connectionString">Connection string</param>
-    public static IServiceCollection AddMigrations(this IServiceCollection services, string? connectionString)
+    public static IServiceCollection AddMigrations(this IServiceCollection services, string connectionString)
     {
-        if (connectionString.IsNullOrEmpty())
-        {
-            throw new ArgumentNullException($"{connectionString} cannot be null or empty.");
-        }
-
         services
             .AddFluentMigratorCore()
             .ConfigureRunner(builder =>

@@ -20,6 +20,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.OutboxDaemon",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.gRPC", "OrderService.gRPC\OrderService.gRPC.csproj", "{EC53E275-3A33-483E-8CC1-C1A8592B4385}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9CF5B000-884F-4A35-8167-1FA58CFE6701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Fixture", "OrderService.Fixture\OrderService.Fixture.csproj", "{E868D8EC-F1F4-4613-8678-19FBB3A4C663}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Repositories.Tests", "OrderService.Repositories.Tests\OrderService.Repositories.Tests.csproj", "{9F416686-AF96-43F3-88B3-84CB330D9BD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +72,17 @@ Global
 		{EC53E275-3A33-483E-8CC1-C1A8592B4385}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC53E275-3A33-483E-8CC1-C1A8592B4385}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC53E275-3A33-483E-8CC1-C1A8592B4385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E868D8EC-F1F4-4613-8678-19FBB3A4C663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E868D8EC-F1F4-4613-8678-19FBB3A4C663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E868D8EC-F1F4-4613-8678-19FBB3A4C663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E868D8EC-F1F4-4613-8678-19FBB3A4C663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F416686-AF96-43F3-88B3-84CB330D9BD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F416686-AF96-43F3-88B3-84CB330D9BD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F416686-AF96-43F3-88B3-84CB330D9BD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F416686-AF96-43F3-88B3-84CB330D9BD7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E868D8EC-F1F4-4613-8678-19FBB3A4C663} = {9CF5B000-884F-4A35-8167-1FA58CFE6701}
+		{9F416686-AF96-43F3-88B3-84CB330D9BD7} = {9CF5B000-884F-4A35-8167-1FA58CFE6701}
 	EndGlobalSection
 EndGlobal
