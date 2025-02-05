@@ -1,5 +1,5 @@
 using System.Data;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace OrderService.Repositories.Abstractions;
 
@@ -9,7 +9,7 @@ namespace OrderService.Repositories.Abstractions;
 public interface IDbConnectionFactory
 {
     /// <summary>
-    /// Creates new <see cref="SqlConnection"/>
+    /// Creates new <see cref="NpgsqlConnection"/>
     /// </summary>
     public IDbConnection CreateConnection();
 }

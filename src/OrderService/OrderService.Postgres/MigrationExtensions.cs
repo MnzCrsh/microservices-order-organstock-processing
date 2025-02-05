@@ -1,6 +1,6 @@
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Processors;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using OrderService.Postgres.Migrations;
 
 namespace OrderService.Postgres;
@@ -14,6 +14,11 @@ public static class MigrationExtensions
     /// <param name="connectionString">Connection string</param>
     public static IServiceCollection AddMigrations(this IServiceCollection services, string connectionString)
     {
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            return services;
+        }
+        
         services
             .AddFluentMigratorCore()
             .ConfigureRunner(builder =>
@@ -24,6 +29,11 @@ public static class MigrationExtensions
                 .ScanIn(typeof(AddOrderAndOutboxTable).Assembly).For.Migrations();
         })
             .AddLogging(builder => builder.AddFluentMigratorConsole());
+
+        services.Configure<SelectingProcessorAccessorOptions>(options =>
+        {
+            options.ProcessorId = "Postgres";
+        });
 
         return services;
     }

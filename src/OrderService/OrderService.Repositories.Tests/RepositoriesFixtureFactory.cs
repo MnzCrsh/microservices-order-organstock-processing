@@ -23,8 +23,14 @@ public class RepositoriesFixtureFactory
             {
                 services
                     .AddRepositoriesModule()
-                    .AddMigrations(SqlConnectionString);
+                    .AddMigrations(TestContainersFixture.PostgresConnectionString);
             });
         }
+
+        // protected override IHost CreateHost(IHostBuilder builder)
+        // {
+        //     base.Services.RunMigrationsForTesting();
+        //     return base.CreateHost(builder);
+        // }
     }
 }

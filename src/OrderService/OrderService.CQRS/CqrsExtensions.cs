@@ -21,9 +21,11 @@ public static class CqrsExtensions
         services.AddSingleton(redisConfig);
 
         services.AddScoped<IOrderCommandProcessor, OrderCommandProcessor>();
-        
-        // services
-        //     .AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
+
+        if (!string.IsNullOrEmpty(redisConfig.ConnectionString))
+        {
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConfig.ConnectionString));
+        }
 
         return services;
     }

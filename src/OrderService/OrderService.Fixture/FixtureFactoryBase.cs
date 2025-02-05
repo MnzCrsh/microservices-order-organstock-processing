@@ -7,18 +7,33 @@ namespace OrderService.Fixture;
 
 internal class FixtureFactoryBase : WebApplicationFactory<Program>
 {
-    protected const string SqlConnectionString = "Data Source=:memory:;Version=3;New=True;";
-    
     public IServiceScope CreateScopeInternal() => 
         base.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Test");
+
         base.ConfigureWebHost(builder);
         builder.ConfigureServices(services =>
         {
-            var dbConfig = new DbConfig { ConnectionString = SqlConnectionString };
+            RemoveApplicationServices(services);
+            
+            var dbConfig = new DbConfig { ConnectionString = TestContainersFixture.PostgresConnectionString };
             services.AddSingleton(dbConfig);
         });
+    }
+    
+    private static void RemoveApplicationServices(IServiceCollection services)
+    {
+        var descriptors = services.Where(d => 
+                d.ServiceType.Namespace != null && 
+                d.ServiceType.Namespace.StartsWith("OrderService"))
+            .ToList();
+
+        foreach (var descriptor in descriptors)
+        {
+            services.Remove(descriptor);
+        }
     }
 }

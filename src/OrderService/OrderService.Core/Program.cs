@@ -7,6 +7,7 @@ using OrderService.Mapping;
 using OrderService.OutboxDaemon;
 using OrderService.Postgres;
 using OrderService.Repositories.Helpers;
+using OrderService.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,17 +19,21 @@ var kafkaConfig = builder.Configuration.GetSection("Kafka");
 var postgresConfig = builder.Configuration.GetSection("Postgres");
 var outboxConfig = builder.Configuration.GetSection("Outbox");
 
-builder.Services
-    .AddOpenApi()
-    .AddMigrations(postgresConfig["ConnectionString"]!)
-    .AddRepositoriesModule()
-    .RegisterSqlConnection(postgresConfig)
-    .AddKafkaProducers(kafkaConfig)
-    .AddMappingModule()
-    .AddApplicationServicesModule(outboxConfig)
-    .AddOutboxDaemon()
-    .AddGrpcModule(builder.Environment.IsDevelopment())
-    .AddCqrs(builder.Configuration);
+if (builder.Environment.EnvironmentName != "Test")
+{
+    builder.Services
+        .AddOpenApi()
+        .AddMigrations(postgresConfig["ConnectionString"]!)
+        .AddRepositoriesModule()
+        .RegisterSqlConnection(postgresConfig)
+        .AddKafkaProducers(kafkaConfig)
+        .AddMappingModule()
+        .AddValidation()
+        .AddApplicationServicesModule(outboxConfig)
+        .AddOutboxDaemon()
+        .AddGrpcModule(builder.Environment.IsDevelopment())
+        .AddCqrs(builder.Configuration);
+}
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -63,19 +68,23 @@ app.Use(async (context, next) =>
     await next();
 });
 
+
 app.UseRouting();
+
 app.Services.RunMigrations();
 
-app.MapGrpcService<OrderGrpcService>();
-app.MapHealthChecks("/health");
-
-app.UseHttpsRedirection();
+if (builder.Environment.EnvironmentName != "Test")
+{
+    app.MapGrpcService<OrderGrpcService>();
+    app.MapHealthChecks("/health");
+    app.UseHttpsRedirection();
+}
 
 
 
 app.Run();
 
 /// <summary>
-/// Used as work-around for unit tests
+/// Used as work-around for tests
 /// </summary>
 public partial class Program;

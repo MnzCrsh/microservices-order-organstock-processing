@@ -1,6 +1,7 @@
 using System.Data;
+using Microsoft.Extensions.Logging;
 using OrderService.Repositories.Abstractions;
-using IsolationLevel = System.Transactions.IsolationLevel;
+using Npgsql;
 
 namespace OrderService.Repositories.Helpers;
 
@@ -8,26 +9,49 @@ namespace OrderService.Repositories.Helpers;
 /// Used for wrapping repositories inside transaction and passing it inside.
 /// </summary>
 /// <param name="connectionFactory">Factory for instantiating connection</param>
-public class TransactionHandler(IDbConnectionFactory connectionFactory) : ITransactionHandler
+public class TransactionHandler(IDbConnectionFactory connectionFactory, ILogger<TransactionHandler> logger) : ITransactionHandler
 {
     /// <inheritdoc/>
     public async Task ExecuteAsync(Func<IDbConnection, IDbTransaction, Task> action)
     {
-        using var connection = connectionFactory.CreateConnection();
-        connection.Open();
+        await using var connection = connectionFactory.CreateConnection() as NpgsqlConnection;
 
-        using var transaction = connection.BeginTransaction((System.Data.IsolationLevel)IsolationLevel.ReadCommitted);
+        if (connection is null)
+        {
+            logger.LogCritical("Failed to create connection");
+            throw new ApplicationException("Connection is not Npgsql or not instantiated");
+        }
+        
+        logger.LogInformation("Opening connection");
+        await connection.OpenAsync();
+        logger.LogInformation("Connection opened");
+        
+        logger.LogInformation("Beginning transaction");
+        var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
         try
         {
+            logger.LogInformation("Executing action {Action}", action.Method.Name);
             await action(connection, transaction);
+            logger.LogInformation("Action {Action} executed with success", action.Method.Name);
 
-            transaction.Commit();
+            logger.LogInformation("Committing transaction");
+            await transaction.CommitAsync();
+            logger.LogInformation("Transaction committed");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            transaction.Rollback();
-            throw new ApplicationException("Transaction failed.", ex);
+            logger.LogError("Action {Action} failed. Beginning rollback.", action.Method.Name);
+            await transaction.RollbackAsync();
+            logger.LogError("Rollback executed.");
+
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation("Closing connection");
+            await transaction.DisposeAsync();
+            logger.LogInformation("Connection closed");
         }
     }
 
@@ -38,23 +62,46 @@ public class TransactionHandler(IDbConnectionFactory connectionFactory) : ITrans
     /// <typeparam name="T">Transaction result</typeparam>
     public async Task<T> ExecuteAsync<T>(Func<IDbConnection, IDbTransaction, Task<T>> action)
     {
-        using var connection = connectionFactory.CreateConnection();
-        connection.Open();
+        await using var connection = connectionFactory.CreateConnection() as NpgsqlConnection;
 
-        using var transaction = connection.BeginTransaction((System.Data.IsolationLevel)IsolationLevel.ReadCommitted);
+        if (connection is null)
+        {
+            logger.LogCritical("Failed to create connection");
+            throw new ApplicationException("Connection is not Npgsql or not instantiated");
+        }
+        
+        logger.LogInformation("Opening connection");
+        await connection.OpenAsync();
+        logger.LogInformation("Connection opened");
+        
+        logger.LogInformation("Beginning transaction");
+        var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
         try
         {
+            logger.LogInformation("Executing action {Action}", action.Method.Name);
             var result = await action(connection, transaction);
+            logger.LogInformation("Action {Action} executed with success", action.Method.Name);
 
-            transaction.Commit();
-
+            logger.LogInformation("Committing transaction");
+            await transaction.CommitAsync();
+            logger.LogInformation("Transaction committed");
+            
             return result;
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
+            logger.LogError("Action {Action} failed. Beginning rollback.", action.Method.Name);
+            await transaction.RollbackAsync();
+            logger.LogError("Rollback executed.");
+
             throw new ApplicationException("Transaction failed.", ex);
+        }
+        finally
+        {
+            logger.LogInformation("Closing connection");
+            await transaction.DisposeAsync();
+            logger.LogInformation("Connection closed");
         }
     }
 
@@ -66,23 +113,46 @@ public class TransactionHandler(IDbConnectionFactory connectionFactory) : ITrans
     /// <typeparam name="T2">Transaction result 2</typeparam>
     public async Task<(T1, T2)> ExecuteAsync<T1, T2>(Func<IDbConnection, IDbTransaction, Task<(T1, T2)>> action)
     {
-        using var connection = connectionFactory.CreateConnection();
-        connection.Open();
+        await using var connection = connectionFactory.CreateConnection() as NpgsqlConnection;
 
-        using var transaction = connection.BeginTransaction((System.Data.IsolationLevel)IsolationLevel.ReadCommitted);
+        if (connection is null)
+        {
+            logger.LogCritical("Failed to create connection");
+            throw new ApplicationException("Connection is not Npgsql or not instantiated");
+        }
+        
+        logger.LogInformation("Opening connection");
+        await connection.OpenAsync();
+        logger.LogInformation("Connection opened");
+        
+        logger.LogInformation("Beginning transaction");
+        var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
         try
         {
+            logger.LogInformation("Executing action {Action}", action.Method.Name);
             var result = await action(connection, transaction);
+            logger.LogInformation("Action {Action} executed with success", action.Method.Name);
 
-            transaction.Commit();
-
+            logger.LogInformation("Committing transaction");
+            await transaction.CommitAsync();
+            logger.LogInformation("Transaction committed");
+            
             return result;
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
+            logger.LogError("Action {Action} failed. Beginning rollback.", action.Method.Name);
+            await transaction.RollbackAsync();
+            logger.LogError("Rollback executed.");
+
             throw new ApplicationException("Transaction failed.", ex);
+        }
+        finally
+        {
+            logger.LogInformation("Closing connection");
+            await transaction.DisposeAsync();
+            logger.LogInformation("Connection closed");
         }
     }
 
@@ -95,23 +165,46 @@ public class TransactionHandler(IDbConnectionFactory connectionFactory) : ITrans
     /// <typeparam name="T3">Transaction result 3</typeparam>
     public async Task<(T1, T2, T3)> ExecuteAsync<T1, T2, T3>(Func<IDbConnection, IDbTransaction, Task<(T1, T2, T3)>> action)
     {
-        using var connection = connectionFactory.CreateConnection();
-        connection.Open();
+        await using var connection = connectionFactory.CreateConnection() as NpgsqlConnection;
 
-        using var transaction = connection.BeginTransaction((System.Data.IsolationLevel)IsolationLevel.ReadCommitted);
+        if (connection is null)
+        {
+            logger.LogCritical("Failed to create connection");
+            throw new ApplicationException("Connection is not Npgsql or not instantiated");
+        }
+        
+        logger.LogInformation("Opening connection");
+        await connection.OpenAsync();
+        logger.LogInformation("Connection opened");
+        
+        logger.LogInformation("Beginning transaction");
+        var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
         try
         {
+            logger.LogInformation("Executing action {Action}", action.Method.Name);
             var result = await action(connection, transaction);
+            logger.LogInformation("Action {Action} executed with success", action.Method.Name);
 
-            transaction.Commit();
-
+            logger.LogInformation("Committing transaction");
+            await transaction.CommitAsync();
+            logger.LogInformation("Transaction committed");
+            
             return result;
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
+            logger.LogError("Action {Action} failed. Beginning rollback.", action.Method.Name);
+            await transaction.RollbackAsync();
+            logger.LogError("Rollback executed.");
+
             throw new ApplicationException("Transaction failed.", ex);
+        }
+        finally
+        {
+            logger.LogInformation("Closing connection");
+            await transaction.DisposeAsync();
+            logger.LogInformation("Connection closed");
         }
     }
 }
