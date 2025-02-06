@@ -8,9 +8,9 @@ public record OutboxMessage
 
     public string Payload { get; init; } = null!;
 
-    public DateTimeOffset CreatedTime { get; init; }
+    public DateTime CreatedTime { get; init; }
 
-    public DateTimeOffset? ProcessedTime { get; init; }
+    public DateTime? ProcessedTime { get; init; }
 
     public MessageStatus Status { get; init; }
 

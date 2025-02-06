@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,12 +18,14 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
         // Arrange
         using var scope = factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
-        var transactionHandler = scope.ServiceProvider.GetRequiredService<ITransactionHandler>();
+        var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+        order = order with { Items = JsonSerializer.Serialize(order.Items) };
         
         // Act
-        var res = await transactionHandler.ExecuteAsync(async (connection, dbTransaction) =>
-            await repo.AddAsync(order, connection, dbTransaction));
-        
+        await uow.BeginTransactionAsync();
+        var res = await repo.AddAsync(order, uow.Connection, uow.Transaction!);
+
         // Assert
         res.Should().NotBeNull();
     }

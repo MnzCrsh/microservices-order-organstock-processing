@@ -11,8 +11,7 @@ public static class RepositoryExtensions
         services
             .AddScoped<IOrderRepository, OrderRepository>()
             .AddScoped<IOutboxRepository, OutboxRepository>()
-            .AddScoped<IDbConnectionFactory, SqlConnectionFactory>()
-            .AddScoped<ITransactionHandler, TransactionHandler>();
+            .AddScoped<IUnitOfWork, NpgsqlUnitOfWork>();
         
         return services;
     }

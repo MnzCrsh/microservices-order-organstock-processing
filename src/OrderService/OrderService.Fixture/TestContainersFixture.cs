@@ -41,7 +41,7 @@ public class TestContainersFixture : IAsyncLifetime
         await _postgresContainer.StartAsync();
         
         PostgresConnectionString = 
-            $"Server=localhost;Database={DatabaseName};Port={_postgresContainer.GetMappedPublicPort(PostgresPort)};" +
+            $"Server=localhost;Database={DatabaseName};Log Parameters=true;Port={_postgresContainer.GetMappedPublicPort(PostgresPort)};" +
             $"Username={Username};Password={Username};Include Error Detail=true;";
     }
 

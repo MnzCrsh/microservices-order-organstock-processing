@@ -23,7 +23,7 @@ if (builder.Environment.EnvironmentName != "Test")
 {
     builder.Services
         .AddOpenApi()
-        .AddMigrations(postgresConfig["ConnectionString"]!)
+        .AddPostgresMigrations(postgresConfig["ConnectionString"]!)
         .AddRepositoriesModule()
         .RegisterSqlConnection(postgresConfig)
         .AddKafkaProducers(kafkaConfig)

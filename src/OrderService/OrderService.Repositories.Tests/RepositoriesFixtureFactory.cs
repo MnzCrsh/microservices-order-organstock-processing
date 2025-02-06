@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using OrderService.Fixture;
 using OrderService.Postgres;
 using OrderService.Repositories.Helpers;
@@ -23,14 +22,8 @@ public class RepositoriesFixtureFactory
             {
                 services
                     .AddRepositoriesModule()
-                    .AddMigrations(TestContainersFixture.PostgresConnectionString);
+                    .AddPostgresMigrations(TestContainersFixture.PostgresConnectionString);
             });
         }
-
-        // protected override IHost CreateHost(IHostBuilder builder)
-        // {
-        //     base.Services.RunMigrationsForTesting();
-        //     return base.CreateHost(builder);
-        // }
     }
 }

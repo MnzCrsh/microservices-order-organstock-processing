@@ -13,7 +13,7 @@ public class CreateOrderCommandToOutboxMessageMapping : IMapper<CreateOrderComma
             Id = Guid.CreateVersion7(),
             EventType = nameof(CreateOrderCommand),
             Payload = JsonSerializer.Serialize(source),
-            CreatedTime = DateTimeOffset.UtcNow,
+            CreatedTime = DateTime.Now,
             Status = MessageStatus.Pending,
             RetryCount = 0
         };

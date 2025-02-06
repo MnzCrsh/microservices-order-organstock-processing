@@ -5,14 +5,14 @@ using OrderService.Postgres.Migrations;
 
 namespace OrderService.Postgres;
 
-public static class MigrationExtensions
+public static class PostgresExtensions
 {
     /// <summary>
     /// Adds module with postgres migrations
     /// </summary>
     /// <param name="services">Service collection</param>
     /// <param name="connectionString">Connection string</param>
-    public static IServiceCollection AddMigrations(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddPostgresMigrations(this IServiceCollection services, string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {
@@ -35,6 +35,7 @@ public static class MigrationExtensions
             options.ProcessorId = "Postgres";
         });
 
+        
         return services;
     }
 

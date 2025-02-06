@@ -13,9 +13,9 @@ public class AddOrderAndOutboxTable : Migration
             .WithColumn("CustomerId").AsGuid().NotNullable()
             .WithColumn("TotalAmount").AsDecimal().NotNullable()
             .WithColumn("OrderStatus").AsInt16().NotNullable().WithDefaultValue((int)OrderStatus.Created)
-            .WithColumn("Items").AsCustom("JSON").NotNullable()
-            .WithColumn("CreatedTime").AsDateTime().NotNullable()
-            .WithColumn("UpdatedTime").AsDateTime().NotNullable();
+            .WithColumn("Items").AsString().NotNullable()
+            .WithColumn("CreatedTime").AsDateTimeOffset().NotNullable()
+            .WithColumn("UpdatedTime").AsDateTimeOffset().NotNullable();
 
         Create.Index("IX_Order_CreatedTime")
             .OnTable("Order")

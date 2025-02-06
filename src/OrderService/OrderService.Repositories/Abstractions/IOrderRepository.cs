@@ -30,12 +30,12 @@ public interface IOrderRepository
     /// <param name="orderId">Order entity</param>
     /// <param name="connection">Sql connection</param>
     /// <param name="transaction">Sql transaction</param>
-    public Task<Order> GetByIdAsync(Guid orderId, IDbConnection connection, IDbTransaction transaction);
+    public Task<Order> GetByIdAsync(Guid orderId, IDbConnection connection);
 
     /// <summary>
     /// Asynchronously fetches top three requested items from database
     /// </summary>
     /// <param name="connection">Sql connection</param>
     /// <param name="transaction">Sql transaction</param>
-    public Task<IEnumerable<Guid>> GetTopThreeItems(IDbConnection connection, IDbTransaction transaction);
+    public Task<IEnumerable<Guid>> GetTopThreeItems(IDbConnection connection);
 }
