@@ -21,7 +21,7 @@ public class TestContainersFixture : IAsyncLifetime
         _network = new NetworkBuilder().Build();
         _postgresContainer = BuildPostgresContainer(_network);
     }
-    
+
     private static PostgreSqlContainer BuildPostgresContainer(INetwork? privateNetwork) =>
         new PostgreSqlBuilder()
             .WithImage(PostgresImage)
@@ -39,8 +39,8 @@ public class TestContainersFixture : IAsyncLifetime
     {
         await _network.CreateAsync();
         await _postgresContainer.StartAsync();
-        
-        PostgresConnectionString = 
+
+        PostgresConnectionString =
             $"Server=localhost;Database={DatabaseName};Log Parameters=true;Port={_postgresContainer.GetMappedPublicPort(PostgresPort)};" +
             $"Username={Username};Password={Username};Include Error Detail=true;";
     }

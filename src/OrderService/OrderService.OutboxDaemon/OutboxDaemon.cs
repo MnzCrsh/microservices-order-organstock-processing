@@ -14,7 +14,7 @@ public class OutboxDaemon(IServiceScopeFactory scopeFactory) : BackgroundService
             using var scope = scopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetRequiredService<IOutboxService>();
             var config = scope.ServiceProvider.GetRequiredService<OutboxConfig>();
-            
+
             await service.ProcessAsync();
 
             await Task.Delay(config.DelayInMilliseconds, stoppingToken);

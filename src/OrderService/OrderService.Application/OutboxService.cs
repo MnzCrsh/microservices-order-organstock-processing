@@ -24,7 +24,7 @@ public class OutboxService(
         try
         {
             await unitOfWork.BeginTransactionAsync();
-        
+
             var outboxMessages = await repository.FetchMessagesByStatusAsync(
                 config.BatchSize, MessageStatus.Pending, unitOfWork.Connection, unitOfWork.Transaction);
 
@@ -46,7 +46,7 @@ public class OutboxService(
 
             await UpdateSentMessages(results, unitOfWork.Connection, unitOfWork.Transaction);
             await UpdateFailedMessages(results, unitOfWork.Connection, unitOfWork.Transaction);
-            
+
             await unitOfWork.CommitAsync();
         }
         catch (Exception)

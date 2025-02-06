@@ -15,7 +15,7 @@ public class NpgsqlUnitOfWork(DbConfig dbConfig, ILogger<NpgsqlUnitOfWork> logge
 
     /// <inheritdoc/>
     public IDbTransaction? Transaction => _transaction;
-    
+
     private NpgsqlConnection? _connection;
     private NpgsqlTransaction? _transaction;
 
@@ -27,7 +27,7 @@ public class NpgsqlUnitOfWork(DbConfig dbConfig, ILogger<NpgsqlUnitOfWork> logge
             logger.LogWarning("The connection {Connection} is already open.", _connection);
             return;
         }
-        
+
         _connection = new NpgsqlConnection(dbConfig.ConnectionString);
         await _connection.OpenAsync();
     }
@@ -41,10 +41,10 @@ public class NpgsqlUnitOfWork(DbConfig dbConfig, ILogger<NpgsqlUnitOfWork> logge
         }
 
         _connection = new NpgsqlConnection(dbConfig.ConnectionString);
-        
+
         logger.LogInformation("Opening connection");
         await _connection.OpenAsync();
-        
+
         logger.LogInformation("Beginning transaction");
         _transaction = await _connection.BeginTransactionAsync(IsolationLevel.ReadCommitted);
     }

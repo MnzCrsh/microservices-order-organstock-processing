@@ -12,7 +12,7 @@ public static class RepositoryExtensions
             .AddScoped<IOrderRepository, OrderRepository>()
             .AddScoped<IOutboxRepository, OutboxRepository>()
             .AddScoped<IUnitOfWork, NpgsqlUnitOfWork>();
-        
+
         return services;
     }
 

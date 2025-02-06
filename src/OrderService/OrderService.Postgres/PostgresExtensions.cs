@@ -18,7 +18,7 @@ public static class PostgresExtensions
         {
             return services;
         }
-        
+
         services
             .AddFluentMigratorCore()
             .ConfigureRunner(builder =>
@@ -35,7 +35,7 @@ public static class PostgresExtensions
             options.ProcessorId = "Postgres";
         });
 
-        
+
         return services;
     }
 

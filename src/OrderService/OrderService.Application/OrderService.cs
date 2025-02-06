@@ -21,7 +21,7 @@ public class OrderService(IOrderRepository orderRepository,
         try
         {
             await unitOfWork.BeginTransactionAsync();
-            
+
             var orderResult = await ExecuteCreateOrder(command, unitOfWork.Connection, unitOfWork.Transaction!);
 
             await ExecuteCreateOutboxMessage(command, unitOfWork.Connection, unitOfWork.Transaction!);
@@ -46,7 +46,7 @@ public class OrderService(IOrderRepository orderRepository,
         try
         {
             await unitOfWork.BeginTransactionAsync();
-            
+
             var updateResult = await ExecuteUpdateOrder(command, unitOfWork.Connection, unitOfWork.Transaction!);
 
             await ExecuteUpdateCreateOutboxMessage(command, unitOfWork.Connection, unitOfWork.Transaction!);
@@ -69,7 +69,7 @@ public class OrderService(IOrderRepository orderRepository,
         try
         {
             await unitOfWork.OpenConnectionAsync();
-            
+
             var res = await orderRepository.GetByIdAsync(id, unitOfWork.Connection);
 
             var orderResponseMapper = mapperFactory.GetMapper<Order, OrderResponseItem>();
@@ -88,9 +88,9 @@ public class OrderService(IOrderRepository orderRepository,
         try
         {
             await unitOfWork.OpenConnectionAsync();
-            
+
             var res = await orderRepository.GetTopThreeItems(unitOfWork.Connection);
-            
+
             return res.ToArray();
         }
         catch (Exception e)

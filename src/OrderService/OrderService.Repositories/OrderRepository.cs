@@ -29,13 +29,13 @@ public class OrderRepository : IOrderRepository
                                                  "UpdatedTime" 
                              """;
 
-        
-        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, order, transaction) 
+
+        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, order, transaction)
                   ?? throw new ArgumentException($"Unable to create order for customer with ID[{order.CustomerId}]");
 
         return res;
     }
-    
+
     /// <inheritdoc/>
     public async Task<bool> UpdateAsync(Order order, IDbConnection connection, IDbTransaction transaction)
     {

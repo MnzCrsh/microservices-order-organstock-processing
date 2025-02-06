@@ -8,7 +8,7 @@ using OrderService.Repositories.Abstractions;
 
 namespace OrderService.Repositories.Tests;
 
-public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContainersFixture _) : 
+public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContainersFixture _) :
     IClassFixture<RepositoriesFixtureFactory>, IClassFixture<TestContainersFixture>
 {
 
@@ -21,7 +21,7 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         order = order with { Items = JsonSerializer.Serialize(order.Items) };
-        
+
         // Act
         await uow.BeginTransactionAsync();
         var res = await repo.AddAsync(order, uow.Connection, uow.Transaction!);

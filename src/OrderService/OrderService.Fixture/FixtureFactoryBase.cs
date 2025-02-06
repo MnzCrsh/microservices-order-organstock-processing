@@ -7,7 +7,7 @@ namespace OrderService.Fixture;
 
 internal class FixtureFactoryBase : WebApplicationFactory<Program>
 {
-    public IServiceScope CreateScopeInternal() => 
+    public IServiceScope CreateScopeInternal() =>
         base.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -18,16 +18,16 @@ internal class FixtureFactoryBase : WebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             RemoveApplicationServices(services);
-            
+
             var dbConfig = new DbConfig { ConnectionString = TestContainersFixture.PostgresConnectionString };
             services.AddSingleton(dbConfig);
         });
     }
-    
+
     private static void RemoveApplicationServices(IServiceCollection services)
     {
-        var descriptors = services.Where(d => 
-                d.ServiceType.Namespace != null && 
+        var descriptors = services.Where(d =>
+                d.ServiceType.Namespace != null &&
                 d.ServiceType.Namespace.StartsWith("OrderService"))
             .ToList();
 
