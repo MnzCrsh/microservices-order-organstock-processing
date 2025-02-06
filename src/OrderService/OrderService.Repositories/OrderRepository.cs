@@ -12,25 +12,26 @@ public class OrderRepository : IOrderRepository
     public async Task<Order> AddAsync(Order order, IDbConnection connection, IDbTransaction transaction)
     {
         const string query = """
-                              INSERT INTO "Order" (
-                                                 "Id","CustomerId",
+                             INSERT INTO "Order" (
+                                                "Id","CustomerId",
+                                                "Items", "TotalAmount",
+                                                "OrderStatus", "CreatedTime",
+                                                "UpdatedTime")
+                                         VALUES (
+                                                 @Id, @CustomerId,
+                                                 @Items, @TotalAmount,
+                                                 @OrderStatus, @CreatedTime,
+                                                 @UpdatedTime)
+                                         RETURNING
+                                                 "Id", "CustomerId",
                                                  "Items", "TotalAmount",
                                                  "OrderStatus", "CreatedTime",
-                                                 "UpdatedTime")
-                                          VALUES (
-                                                  @Id, @CustomerId,
-                                                  @Items, @TotalAmount,
-                                                  @OrderStatus, @CreatedTime,
-                                                  @UpdatedTime)
-                                          RETURNING
-                                                  "Id", "CustomerId",
-                                                  "Items", "TotalAmount",
-                                                  "OrderStatus", "CreatedTime",
-                                                  "UpdatedTime" 
-                              """;
+                                                 "UpdatedTime" 
+                             """;
 
-        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, order, transaction) ??
-                  throw new ArgumentException($"Unable to create oder for customer with ID[{order.CustomerId}]");
+
+        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, order, transaction)
+                  ?? throw new ArgumentException($"Unable to create order for customer with ID[{order.CustomerId}]");
 
         return res;
     }
@@ -47,31 +48,35 @@ public class OrderRepository : IOrderRepository
         return await connection.ExecuteAsync(query, order, transaction) > 0;
     }
 
-    public async Task<Order> GetByIdAsync(Guid orderId, IDbConnection connection, IDbTransaction transaction)
+    public async Task<Order> GetByIdAsync(Guid orderId, IDbConnection connection)
     {
         const string query = """
                              SELECT * FROM "Order" WHERE "Id" = @orderId;
                              """;
 
-        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, orderId, transaction)
+        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, orderId)
                   ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
 
         return res;
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<Guid>> GetTopThreeItems(IDbConnection connection, IDbTransaction transaction)
+    public async Task<IEnumerable<Guid>> GetTopThreeItems(IDbConnection connection)
     {
         const string query = """
-                             WITH ParsedJson AS (SELECT jsonb_array_elements("Items") ->> 'Id' AS item_id FROM "Order")
-                             SELECT item_id, count(*) as count
+                             WITH ParsedJson AS (
+                                 SELECT 
+                                     CAST(jsonb_array_elements("Items") ->> 'Id' AS UUID) AS item_id 
+                                 FROM "Order"
+                             )
+                             SELECT item_id
                              FROM ParsedJson
                              GROUP BY item_id
-                             ORDER BY count DESC
+                             ORDER BY COUNT(*) DESC
                              LIMIT 3
                              """;
 
-        var res = await connection.QueryAsync<Guid>(query, transaction);
+        var res = await connection.QueryAsync<Guid>(query);
         return res;
     }
 }

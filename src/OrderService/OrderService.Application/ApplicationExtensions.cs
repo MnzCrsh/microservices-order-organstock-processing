@@ -17,6 +17,7 @@ public static class ApplicationExtensions
     {
         return services.
             AddScoped<IOrderService, OrderService>()
+            .AddScoped<IOutboxService, OutboxService>()
             .RegisterOutboxConfig(outboxSection);
     }
 

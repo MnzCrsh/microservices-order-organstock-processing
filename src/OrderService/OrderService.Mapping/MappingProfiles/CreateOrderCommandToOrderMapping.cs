@@ -15,8 +15,8 @@ public class CreateOrderCommandToOrderMapping : IMapper<CreateOrderCommand, Orde
             Items = JsonSerializer.Serialize(command.Items),
             TotalAmount = command.TotalAmount,
             OrderStatus = OrderStatus.Created,
-            CreatedTime = DateTimeOffset.UtcNow,
-            UpdatedTime = DateTimeOffset.UtcNow
+            CreatedTime = DateTime.UtcNow,
+            UpdatedTime = DateTime.UtcNow
         };
 
     public Order Map(CreateOrderCommand source) => CreateOrderFromCommand(source);

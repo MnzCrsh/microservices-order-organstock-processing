@@ -8,6 +8,6 @@ public class UpdateOrderCommandToOrderMapping : IMapper<UpdateOrderCommand, Orde
     public Order Map(UpdateOrderCommand source) => new()
     {
         OrderStatus = source.OrderStatus,
-        UpdatedTime = DateTimeOffset.Now
+        UpdatedTime = DateTime.Now
     };
 }

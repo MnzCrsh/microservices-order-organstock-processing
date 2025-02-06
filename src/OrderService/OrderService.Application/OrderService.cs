@@ -11,7 +11,7 @@ namespace OrderService.Application;
 
 public class OrderService(IOrderRepository orderRepository,
     IOutboxRepository outboxRepository,
-    ITransactionHandler transaction,
+    IUnitOfWork unitOfWork,
     IMapperFactory mapperFactory,
     ILogger<OrderService> logger) : IOrderService
 {
@@ -20,22 +20,22 @@ public class OrderService(IOrderRepository orderRepository,
     {
         try
         {
-            var transactionRes = await transaction.ExecuteAsync(async (connection, dbTransaction) =>
-            {
-                var orderResult = await ExecuteCreateOrder(command, connection, dbTransaction);
+            await unitOfWork.BeginTransactionAsync();
 
-                await ExecuteCreateOutboxMessage(command, connection, dbTransaction);
+            var orderResult = await ExecuteCreateOrder(command, unitOfWork.Connection, unitOfWork.Transaction!);
 
-                return orderResult;
-            });
+            await ExecuteCreateOutboxMessage(command, unitOfWork.Connection, unitOfWork.Transaction!);
+
+            await unitOfWork.CommitAsync();
 
             var orderResponseMapper = mapperFactory.GetMapper<Order, OrderResponseItem>();
-            return orderResponseMapper.Map(transactionRes ?? throw new InvalidOperationException
+            return orderResponseMapper.Map(orderResult ?? throw new InvalidOperationException
                 ($"Unable to add Order with CustomerId[{command.CustomerId}]."));
         }
         catch (Exception e)
         {
             logger.LogError("An error occured while adding new Order. {Error}", e);
+            await unitOfWork.RollbackAsync();
             throw;
         }
     }
@@ -45,20 +45,20 @@ public class OrderService(IOrderRepository orderRepository,
     {
         try
         {
-            var transactionRes = await transaction.ExecuteAsync(async (connection, dbTransaction) =>
-            {
-                var updateResult = await ExecuteUpdateOrder(command, connection, dbTransaction);
+            await unitOfWork.BeginTransactionAsync();
 
-                await ExecuteUpdateCreateOutboxMessage(command, connection, dbTransaction);
+            var updateResult = await ExecuteUpdateOrder(command, unitOfWork.Connection, unitOfWork.Transaction!);
 
-                return updateResult;
-            });
+            await ExecuteUpdateCreateOutboxMessage(command, unitOfWork.Connection, unitOfWork.Transaction!);
 
-            return transactionRes;
+            await unitOfWork.CommitAsync();
+
+            return updateResult;
         }
         catch (Exception e)
         {
             logger.LogError("An error occured while updating Order with ID[{Id}]. {Error}", command.Id, e);
+            await unitOfWork.RollbackAsync();
             throw;
         }
     }
@@ -68,11 +68,12 @@ public class OrderService(IOrderRepository orderRepository,
     {
         try
         {
-            var transactionRes = await transaction.ExecuteAsync(async (connection, dbTransaction)
-                => await orderRepository.GetByIdAsync(id, connection, dbTransaction));
+            await unitOfWork.OpenConnectionAsync();
+
+            var res = await orderRepository.GetByIdAsync(id, unitOfWork.Connection);
 
             var orderResponseMapper = mapperFactory.GetMapper<Order, OrderResponseItem>();
-            return orderResponseMapper.Map(transactionRes);
+            return orderResponseMapper.Map(res);
         }
         catch (Exception e)
         {
@@ -86,10 +87,11 @@ public class OrderService(IOrderRepository orderRepository,
     {
         try
         {
-            var transactionRes = await transaction.ExecuteAsync(async (connection, dbTransaction)
-                => await orderRepository.GetTopThreeItems(connection, dbTransaction));
+            await unitOfWork.OpenConnectionAsync();
 
-            return transactionRes.ToArray();
+            var res = await orderRepository.GetTopThreeItems(unitOfWork.Connection);
+
+            return res.ToArray();
         }
         catch (Exception e)
         {

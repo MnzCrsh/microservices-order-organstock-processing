@@ -13,7 +13,7 @@ namespace OrderService.Application;
 /// <inheritdoc/>
 public class OutboxService(
     IOutboxRepository repository,
-    ITransactionHandler transactionHandler,
+    IUnitOfWork unitOfWork,
     IProducer<Guid, OutboxResponseModel> producer,
     IMapperFactory mapperFactory,
     OutboxConfig config) : IOutboxService
@@ -21,10 +21,12 @@ public class OutboxService(
     /// <inheritdoc/>
     public async Task ProcessAsync()
     {
-        await transactionHandler.ExecuteAsync(async (conn, transaction) =>
+        try
         {
+            await unitOfWork.BeginTransactionAsync();
+
             var outboxMessages = await repository.FetchMessagesByStatusAsync(
-                config.BatchSize, MessageStatus.Pending, conn, transaction);
+                config.BatchSize, MessageStatus.Pending, unitOfWork.Connection, unitOfWork.Transaction);
 
             var messages = outboxMessages.ToList();
             if (messages.Count <= 0)
@@ -42,9 +44,16 @@ public class OutboxService(
 
             var results = Task.WhenAll(produceTasks);
 
-            await UpdateSentMessages(results, conn, transaction);
-            await UpdateFailedMessages(results, conn, transaction);
-        });
+            await UpdateSentMessages(results, unitOfWork.Connection, unitOfWork.Transaction);
+            await UpdateFailedMessages(results, unitOfWork.Connection, unitOfWork.Transaction);
+
+            await unitOfWork.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await unitOfWork.RollbackAsync();
+            throw;
+        }
     }
 
     private async Task UpdateFailedMessages(Task<(Guid Id, bool IsAck)[]> results, IDbConnection conn, IDbTransaction transaction)

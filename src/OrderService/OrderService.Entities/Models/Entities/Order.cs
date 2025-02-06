@@ -1,3 +1,4 @@
+
 namespace OrderService.Entities.Models.Entities;
 
 /// <summary>
@@ -15,7 +16,7 @@ public record Order
 
     public OrderStatus OrderStatus { get; init; }
 
-    public DateTimeOffset CreatedTime { get; init; }
+    public DateTime CreatedTime { get; init; }
 
-    public DateTimeOffset UpdatedTime { get; init; }
+    public DateTime UpdatedTime { get; init; }
 }

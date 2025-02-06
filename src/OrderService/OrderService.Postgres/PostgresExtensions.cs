@@ -1,22 +1,22 @@
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Processors;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using OrderService.Postgres.Migrations;
 
 namespace OrderService.Postgres;
 
-public static class MigrationExtensions
+public static class PostgresExtensions
 {
     /// <summary>
     /// Adds module with postgres migrations
     /// </summary>
     /// <param name="services">Service collection</param>
     /// <param name="connectionString">Connection string</param>
-    public static IServiceCollection AddMigrations(this IServiceCollection services, string? connectionString)
+    public static IServiceCollection AddPostgresMigrations(this IServiceCollection services, string connectionString)
     {
-        if (connectionString.IsNullOrEmpty())
+        if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new ArgumentNullException($"{connectionString} cannot be null or empty.");
+            return services;
         }
 
         services
@@ -29,6 +29,12 @@ public static class MigrationExtensions
                 .ScanIn(typeof(AddOrderAndOutboxTable).Assembly).For.Migrations();
         })
             .AddLogging(builder => builder.AddFluentMigratorConsole());
+
+        services.Configure<SelectingProcessorAccessorOptions>(options =>
+        {
+            options.ProcessorId = "Postgres";
+        });
+
 
         return services;
     }
