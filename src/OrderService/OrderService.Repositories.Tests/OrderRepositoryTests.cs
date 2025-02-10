@@ -25,11 +25,11 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
 
         // Act
         await uow.BeginTransactionAsync();
-        
+
         var res = await repo.AddAsync(order, uow.Connection, uow.Transaction!);
-        
+
         await uow.CommitAsync();
-        
+
         // Assert
         res.Should().NotBeNull();
     }
@@ -41,16 +41,16 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
         using var scope = factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        
+
         order = order with { Items = JsonSerializer.Serialize(order.Items) };
-        
+
         // Act
         await uow.BeginTransactionAsync();
         var createRes = await repo.AddAsync(order, uow.Connection, uow.Transaction!);
         await uow.CommitAsync();
-        
-        var orderToUpdate = order with { Id = createRes.Id, OrderStatus = OrderStatus.PaymentRejected}; 
-        
+
+        var orderToUpdate = order with { Id = createRes.Id, OrderStatus = OrderStatus.PaymentRejected };
+
         await uow.BeginTransactionAsync();
         var isUpdated = await repo.UpdateAsync(orderToUpdate, uow.Connection, uow.Transaction!);
         await uow.CommitAsync();
@@ -66,9 +66,9 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
         using var scope = factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        
+
         order = order with { Items = JsonSerializer.Serialize(order.Items) };
-        
+
         // Act
         await uow.BeginTransactionAsync();
         var createRes = await repo.AddAsync(order, uow.Connection, uow.Transaction!);
@@ -89,15 +89,15 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
         using var scope = factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        
+
         Guid[] items = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
         order = order with { Items = JsonSerializer.Serialize(items) };
-        
+
         // Act
         await uow.BeginTransactionAsync();
         await repo.AddAsync(order, uow.Connection, uow.Transaction!);
         await uow.CommitAsync();
-        
+
         await uow.OpenConnectionAsync();
         var getRes = await repo.GetTopThreeItems(uow.Connection);
 

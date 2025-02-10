@@ -54,7 +54,7 @@ public class OrderRepository : IOrderRepository
                              SELECT * FROM "Order" WHERE "Id" = @orderId;
                              """;
 
-        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, new{ orderId })
+        var res = await connection.QuerySingleOrDefaultAsync<Order>(query, new { orderId })
                   ?? throw new ArgumentException($"Unable to find order with ID[{orderId}]");
 
         return res;
@@ -66,8 +66,15 @@ public class OrderRepository : IOrderRepository
         const string query = """
                              WITH ParsedJson AS (
                              SELECT 
-                                 CAST(jsonb_array_elements_text("Items"::jsonb) AS UUID) AS item_id 
+                                 CAST(elem AS UUID) AS item_id 
                              FROM "Order"
+                             LEFT JOIN LATERAL jsonb_array_elements_text(
+                                 CASE 
+                                     WHEN jsonb_typeof("Items"::jsonb) = 'array' 
+                                     THEN "Items"::jsonb 
+                                     ELSE '[]'::jsonb 
+                                 END
+                                ) AS elem ON true
                              )
                              SELECT item_id
                              FROM ParsedJson
@@ -78,7 +85,7 @@ public class OrderRepository : IOrderRepository
                              """;
 
         var res = await connection.QueryAsync<Guid>(query);
-        
+
         return res;
     }
 }

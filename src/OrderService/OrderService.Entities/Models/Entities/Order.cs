@@ -16,7 +16,7 @@ public record Order
 
     public OrderStatus OrderStatus { get; init; }
 
-    
+
     // TODO: Change to Noda Time types
     public DateTime CreatedTime { get; init; }
 
