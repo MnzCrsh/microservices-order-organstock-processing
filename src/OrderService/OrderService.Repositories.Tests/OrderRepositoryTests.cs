@@ -32,6 +32,7 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
 
         // Assert
         res.Should().NotBeNull();
+        res.Id.Should().Be(order.Id);
     }
 
     [Theory(DisplayName = "UpdateAsync should affect row in database"), AutoData]
