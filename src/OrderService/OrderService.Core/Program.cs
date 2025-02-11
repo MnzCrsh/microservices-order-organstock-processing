@@ -22,17 +22,17 @@ var outboxConfig = builder.Configuration.GetSection("Outbox");
 if (builder.Environment.EnvironmentName != "Test")
 {
     builder.Services
-        .AddOpenApi()
         .AddPostgresMigrations(postgresConfig["ConnectionString"]!)
         .AddRepositoriesModule()
-        .RegisterSqlConnection(postgresConfig)
         .AddKafkaProducers(kafkaConfig)
         .AddMappingModule()
         .AddValidation()
-        .AddApplicationServicesModule(outboxConfig)
+        .AddApplicationServicesModule()
+        .RegisterSqlConnection(postgresConfig)
+        .RegisterOutboxConfig(outboxConfig)
         .AddOutboxDaemon()
         .AddGrpcModule(builder.Environment.IsDevelopment())
-        .AddCqrs(builder.Configuration);
+        .AddCqrsModule(builder.Configuration);
 }
 
 builder.WebHost.ConfigureKestrel(options =>

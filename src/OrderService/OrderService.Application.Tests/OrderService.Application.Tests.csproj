@@ -21,7 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OrderService.Core\OrderService.Core.csproj" />
       <ProjectReference Include="..\OrderService.Fixture\OrderService.Fixture.csproj" />
     </ItemGroup>
 
