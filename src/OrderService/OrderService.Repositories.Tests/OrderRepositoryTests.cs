@@ -9,15 +9,15 @@ using OrderService.Repositories.Abstractions;
 
 namespace OrderService.Repositories.Tests;
 
-public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContainersFixture _) :
-    IClassFixture<RepositoriesFixtureFactory>, IClassFixture<TestContainersFixture>
+public class OrderRepositoryTests(TestContainersFixture testContainersFixture) : IClassFixture<TestContainersFixture>
 {
+    private readonly RepositoriesFixtureFactory _factory = new(testContainersFixture.PostgresConnectionString);
 
     [Theory(DisplayName = "AddAsync should insert new order into database"), AutoData]
     public async Task AddAsync_ShouldAddOrderToDb(Order order)
     {
         // Arrange
-        using var scope = factory.CreateScope();
+        using var scope = _factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -32,13 +32,14 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
 
         // Assert
         res.Should().NotBeNull();
+        res.Id.Should().Be(order.Id);
     }
 
     [Theory(DisplayName = "UpdateAsync should affect row in database"), AutoData]
     public async Task UpdateAsync_ShouldUpdateOrderInDb(Order order)
     {
         // Arrange
-        using var scope = factory.CreateScope();
+        using var scope = _factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -63,7 +64,7 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
     public async Task GetByIdAsync_ShouldReturnOrderFromDb(Order order)
     {
         // Arrange
-        using var scope = factory.CreateScope();
+        using var scope = _factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -86,7 +87,7 @@ public class OrderRepositoryTests(RepositoriesFixtureFactory factory, TestContai
     public async Task GetTopThreeItems_ShouldReturnItemIds(Order order)
     {
         // Arrange
-        using var scope = factory.CreateScope();
+        using var scope = _factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 

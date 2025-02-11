@@ -42,14 +42,13 @@ public class OutboxRepository : IOutboxRepository
                                  "ProcessedTime" = NOW()
                              FROM (
                                 SELECT
-                                    unnest(@Ids) AS "Id",
-                                    unnest(@Statuses) AS "Status"
+                                    unnest(@Ids) AS "Id", @Status
                                  ) AS m
                              WHERE o."Id" = m."Id"
                              """;
 
         ids = ids.ToList();
-        return await connection.ExecuteAsync(query, (ids, status), transaction) == ids.Count();
+        return await connection.ExecuteAsync(query, new { ids, status }, transaction) == ids.Count();
     }
 
     /// <inheritdoc/>

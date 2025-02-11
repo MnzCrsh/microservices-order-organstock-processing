@@ -6,14 +6,16 @@ using OrderService.Repositories.Helpers;
 
 namespace OrderService.Repositories.Tests;
 
-public class RepositoriesFixtureFactory
+public class RepositoriesFixtureFactory(string connectionString)
 {
-    private readonly RepositoriesFixtureFactoryImpl _privateFactory = new();
+    private readonly RepositoriesFixtureFactoryImpl _privateFactory = new(connectionString);
 
     public IServiceScope CreateScope() => _privateFactory.CreateScopeInternal();
 
-    private class RepositoriesFixtureFactoryImpl : FixtureFactoryBase
+    private class RepositoriesFixtureFactoryImpl(string connectionString) : FixtureFactoryBase(connectionString)
     {
+        private readonly string _connectionString = connectionString;
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             base.ConfigureWebHost(builder);
@@ -22,7 +24,7 @@ public class RepositoriesFixtureFactory
             {
                 services
                     .AddRepositoriesModule()
-                    .AddPostgresMigrations(TestContainersFixture.PostgresConnectionString);
+                    .AddPostgresMigrations(_connectionString);
             });
         }
     }

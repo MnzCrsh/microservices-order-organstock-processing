@@ -22,9 +22,9 @@ public class AddOrderAndOutboxTable : Migration
             .OnColumn("CreatedTime").Ascending();
 
         Create.Table("Outbox")
-            .WithColumn("Id").AsInt64().PrimaryKey().Unique().Identity()
+            .WithColumn("Id").AsGuid().PrimaryKey().Unique()
             .WithColumn("EventType").AsString(ServiceConstants.StringMaxLength).NotNullable()
-            .WithColumn("Payload").AsCustom("JSON").NotNullable()
+            .WithColumn("Payload").AsString().NotNullable()
             .WithColumn("CreatedTime").AsDateTimeOffset().NotNullable()
             .WithColumn("ProcessedTime").AsDateTimeOffset().Nullable()
             .WithColumn("Status").AsInt16().NotNullable().WithDefaultValue((int)MessageStatus.Pending)
