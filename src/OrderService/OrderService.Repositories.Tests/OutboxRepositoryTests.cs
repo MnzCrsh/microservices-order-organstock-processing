@@ -8,14 +8,15 @@ using OrderService.Repositories.Abstractions;
 
 namespace OrderService.Repositories.Tests;
 
-public class OutboxRepositoryTests(RepositoriesFixtureFactory factory, TestContainersFixture _) :
-    IClassFixture<RepositoriesFixtureFactory>, IClassFixture<TestContainersFixture>
+public class OutboxRepositoryTests(TestContainersFixture testContainersFixture) : IClassFixture<TestContainersFixture>
 {
+    private readonly RepositoriesFixtureFactory _factory = new(testContainersFixture.PostgresConnectionString);
+
     [Theory(DisplayName = "AddAsync should insert new message into database"), AutoData]
     public async Task AddAsync_ShouldAddMessageToDatabase(OutboxMessage message)
     {
         // Arrange
-        using var scope = factory.CreateScope();
+        using var scope = _factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOutboxRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -33,7 +34,7 @@ public class OutboxRepositoryTests(RepositoriesFixtureFactory factory, TestConta
     public async Task UpdateAsync_ShouldUpdateMessageInDatabase(OutboxMessage message)
     {
         // Arrange
-        using var scope = factory.CreateScope();
+        using var scope = _factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOutboxRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -54,7 +55,7 @@ public class OutboxRepositoryTests(RepositoriesFixtureFactory factory, TestConta
     public async Task FetchMessagesByStatusAsync_ShouldReturnMessagesByStatus_AndSetThemAsProcessing(OutboxMessage message)
     {
         // Arrange
-        using var scope = factory.CreateScope();
+        using var scope = _factory.CreateScope();
         var repo = scope.ServiceProvider.GetRequiredService<IOutboxRepository>();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -65,6 +66,7 @@ public class OutboxRepositoryTests(RepositoriesFixtureFactory factory, TestConta
 
         await uow.BeginTransactionAsync();
         var fetchedMessages = await repo.FetchMessagesByStatusAsync(1, MessageStatus.Pending, uow.Connection, uow.Transaction!);
+        await uow.CommitAsync();
 
         // Assert
         var outboxMessage = fetchedMessages.ToList().FirstOrDefault();

@@ -5,7 +5,7 @@ using OrderService.Repositories.Helpers;
 
 namespace OrderService.Fixture;
 
-internal class FixtureFactoryBase : WebApplicationFactory<Program>
+internal class FixtureFactoryBase(string connectionString) : WebApplicationFactory<Program>
 {
     public IServiceScope CreateScopeInternal() =>
         base.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
@@ -19,7 +19,7 @@ internal class FixtureFactoryBase : WebApplicationFactory<Program>
         {
             RemoveApplicationServices(services);
 
-            var dbConfig = new DbConfig { ConnectionString = TestContainersFixture.PostgresConnectionString };
+            var dbConfig = new DbConfig { ConnectionString = connectionString };
             services.AddSingleton(dbConfig);
         });
     }
