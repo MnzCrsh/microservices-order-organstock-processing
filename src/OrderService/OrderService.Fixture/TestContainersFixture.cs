@@ -1,8 +1,11 @@
+using System.Text;
+using Docker.DotNet;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Networks;
 using Testcontainers.PostgreSql;
 using Testcontainers.Kafka;
 using Xunit;
+using IContainer = DotNet.Testcontainers.Containers.IContainer;
 
 namespace OrderService.Fixture;
 
@@ -18,7 +21,6 @@ public class TestContainersFixture : IAsyncLifetime
     private readonly INetwork _network;
     private readonly PostgreSqlContainer _postgresContainer;
     private readonly KafkaContainer _kafkaContainer;
-
 
     public string PostgresConnectionString { get; private set; } = null!;
     public string KafkaBootstrapServer { get; private set; } = null!;
@@ -59,10 +61,64 @@ public class TestContainersFixture : IAsyncLifetime
             .WithCleanUp(true)
             .Build();
 
+    private async Task ExecuteSeedSqlData()
+    {
+        var sqlQuery = await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, "seed_data.sql"));
+        await _postgresContainer.ExecScriptAsync(sqlQuery);
+    }
+
+    private async Task InitializeContainersWithLErrorTracing()
+    {
+        var containers = new List<IContainer> { _postgresContainer, _kafkaContainer };
+
+        try
+        {
+            foreach (var container in containers)
+            {
+                await container.StartAsync();
+            }
+        }
+        catch (DockerApiException dockerEx)
+        {
+            var match = FixtureRegexs.MatchDockerId(dockerEx.Message);
+            if (!match.Success)
+            {
+                throw;
+            }
+
+            var containerId = match.Groups[1].Value;
+            var failedContainer = containers.FirstOrDefault(x => x.Id == containerId);
+            if (failedContainer == null)
+            {
+                throw;
+            }
+
+            var logs = await failedContainer.GetLogsAsync();
+            var containerException = CreateContainerException(failedContainer, logs);
+
+            throw new AggregateException(dockerEx, containerException);
+        }
+    }
+
+    private static InvalidOperationException CreateContainerException(IContainer failedContainer,
+        (string _, string Errors) logs)
+    {
+        var message = new StringBuilder($"Failed to start container:[{failedContainer.Image.FullName}] with:");
+        var logLines = logs.Errors.Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
+        foreach (var line in logLines)
+        {
+            message.AppendLine($"\n \t -> Error:{line}");
+        }
+        return new InvalidOperationException(message.ToString());
+    }
+
     public async Task InitializeAsync()
     {
         await _network.CreateAsync();
-        await _postgresContainer.StartAsync();
+
+        await InitializeContainersWithLErrorTracing();
+
+        await ExecuteSeedSqlData();
 
         PostgresConnectionString = _postgresContainer.GetConnectionString();
         KafkaBootstrapServer = _kafkaContainer.GetBootstrapAddress();
@@ -71,6 +127,7 @@ public class TestContainersFixture : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await _postgresContainer.DisposeAsync();
+        await _kafkaContainer.DisposeAsync();
         await _network.DisposeAsync();
     }
 }

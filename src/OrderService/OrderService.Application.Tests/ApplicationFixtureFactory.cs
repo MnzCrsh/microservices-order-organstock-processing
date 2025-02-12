@@ -31,6 +31,7 @@ public class ApplicationFixtureFactory(string connectionString, string kafkaBoot
                     .AddPostgresMigrations(_connectionString);
 
                 AddKafkaProducer(services);
+                AddKafkaConsumer(services);
             });
         }
 
@@ -43,6 +44,20 @@ public class ApplicationFixtureFactory(string connectionString, string kafkaBoot
                     BootstrapServers = kafkaBootstrapServer
                 };
                 return new ProducerBuilder<Guid, OutboxResponseModel>(producerConfig).Build();
+            });
+        }
+
+        private void AddKafkaConsumer(IServiceCollection services)
+        {
+            services.AddSingleton<IConsumer<Guid, OutboxResponseModel>>(_ =>
+            {
+                var consumerConfig = new ConsumerConfig
+                {
+                    BootstrapServers = kafkaBootstrapServer,
+                    GroupId = "testOutbox-consumer-group",
+                    AutoOffsetReset = AutoOffsetReset.Earliest
+                };
+                return new ConsumerBuilder<Guid, OutboxResponseModel>(consumerConfig).Build();
             });
         }
     }

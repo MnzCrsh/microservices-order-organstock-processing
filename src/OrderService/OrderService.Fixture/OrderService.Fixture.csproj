@@ -25,4 +25,10 @@
       <ProjectReference Include="..\OrderService.Repositories\OrderService.Repositories.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="seed_data.sql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
