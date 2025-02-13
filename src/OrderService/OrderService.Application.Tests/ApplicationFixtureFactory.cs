@@ -1,8 +1,11 @@
 using Confluent.Kafka;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using OrderService.Application.KafkaSerializers;
+using OrderService.Application.Tests.TestKafkaDeserializers;
 using OrderService.Entities.Models.Responses;
 using OrderService.Fixture;
+using OrderService.Mapping;
 using OrderService.Postgres;
 using OrderService.Repositories.Helpers;
 
@@ -23,12 +26,16 @@ public class ApplicationFixtureFactory(string connectionString, string kafkaBoot
         {
             base.ConfigureWebHost(builder);
 
+            var outboxConfig = new OutboxConfig { BatchSize = 10 };
+
             builder.ConfigureServices(services =>
             {
                 services
+                    .AddSingleton(outboxConfig)
                     .AddRepositoriesModule()
-                    .AddApplicationServicesModule()
-                    .AddPostgresMigrations(_connectionString);
+                    .AddPostgresMigrations(_connectionString)
+                    .AddMappingModule()
+                    .AddApplicationServicesModule();
 
                 AddKafkaProducer(services);
                 AddKafkaConsumer(services);
@@ -43,7 +50,10 @@ public class ApplicationFixtureFactory(string connectionString, string kafkaBoot
                 {
                     BootstrapServers = kafkaBootstrapServer
                 };
-                return new ProducerBuilder<Guid, OutboxResponseModel>(producerConfig).Build();
+                return new ProducerBuilder<Guid, OutboxResponseModel>(producerConfig)
+                    .SetKeySerializer(new GuidSerializer())
+                    .SetValueSerializer(new OutboxResponseModelSerializer())
+                    .Build();
             });
         }
 
@@ -57,7 +67,10 @@ public class ApplicationFixtureFactory(string connectionString, string kafkaBoot
                     GroupId = "testOutbox-consumer-group",
                     AutoOffsetReset = AutoOffsetReset.Earliest
                 };
-                return new ConsumerBuilder<Guid, OutboxResponseModel>(consumerConfig).Build();
+                return new ConsumerBuilder<Guid, OutboxResponseModel>(consumerConfig)
+                    .SetKeyDeserializer(new GuidDeserializer())
+                    .SetValueDeserializer(new OutboxResponseModelDeserializer())
+                    .Build();
             });
         }
     }

@@ -15,6 +15,7 @@ public class OutboxServiceTests(TestContainersFixture fixture) : IClassFixture<T
     public async Task ProcessAsync_ShouldSendMessagesToKafka()
     {
         // Arrange
+        const int seedMessagesCount = 10;
         var scope = _factory.CreateScope();
         var outboxService = scope.ServiceProvider.GetRequiredService<IOutboxService>();
         var consumer = scope.ServiceProvider.GetRequiredService<IConsumer<Guid, OutboxResponseModel>>();
@@ -22,12 +23,17 @@ public class OutboxServiceTests(TestContainersFixture fixture) : IClassFixture<T
         // Act
         consumer.Subscribe("order-outbox-service");
         await outboxService.ProcessAsync();
-        var consumerResult = consumer.Consume(TimeSpan.FromSeconds(10));
+
+        var receivedMessages = new List<OutboxResponseModel>();
+
+        for (var i = 0; i < seedMessagesCount; i++)
+        {
+            var consumerResult = consumer.Consume(TimeSpan.FromSeconds(10));
+            receivedMessages.Add(consumerResult.Message.Value);
+        }
 
         // Assert
-        consumerResult.Should().NotBeNull();
-        var x = consumerResult.Message.Value;
-        var y = consumerResult.Message.Value;
+        receivedMessages.Should().NotBeNull().And.HaveCount(seedMessagesCount);
     }
 
 }

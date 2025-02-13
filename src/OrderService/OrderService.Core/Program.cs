@@ -71,10 +71,10 @@ app.Use(async (context, next) =>
 
 app.UseRouting();
 
-app.Services.RunMigrations();
 
 if (builder.Environment.EnvironmentName != "Test")
 {
+    app.Services.RunMigrations();
     app.MapGrpcService<OrderGrpcService>();
     app.MapHealthChecks("/health");
     app.UseHttpsRedirection();

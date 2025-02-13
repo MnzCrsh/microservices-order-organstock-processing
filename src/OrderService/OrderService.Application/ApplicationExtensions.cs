@@ -2,6 +2,7 @@ using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderService.Application.Abstractions;
+using OrderService.Application.KafkaSerializers;
 using OrderService.Entities.Models.Responses;
 
 namespace OrderService.Application;
@@ -43,7 +44,10 @@ public static class ApplicationExtensions
                 BatchSize = int.Parse(kafkaConfig["Produce:BatchSize"] ?? "16384"),
                 LingerMs = int.Parse(kafkaConfig["Produce:LingerMs"] ?? "5"),
             };
-            return new ProducerBuilder<Guid, OutboxResponseModel>(producerConfig).Build();
+            return new ProducerBuilder<Guid, OutboxResponseModel>(producerConfig)
+                .SetKeySerializer(new GuidSerializer())
+                .SetValueSerializer(new OutboxResponseModelSerializer())
+                .Build();
         });
 
         return services;
