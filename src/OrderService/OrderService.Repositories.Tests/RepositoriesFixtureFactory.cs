@@ -12,7 +12,8 @@ public class RepositoriesFixtureFactory(string connectionString)
 
     public IServiceScope CreateScope() => _privateFactory.CreateScopeInternal();
 
-    private class RepositoriesFixtureFactoryImpl(string connectionString) : FixtureFactoryBase(connectionString)
+    private class RepositoriesFixtureFactoryImpl(string connectionString) :
+        FixtureFactoryBase(connectionString)
     {
         private readonly string _connectionString = connectionString;
 

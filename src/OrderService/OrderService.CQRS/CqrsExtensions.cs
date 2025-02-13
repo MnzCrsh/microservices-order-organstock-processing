@@ -12,7 +12,7 @@ public static class CqrsExtensions
     /// </summary>
     /// <param name="services">Service collection</param>
     /// <param name="configuration">Configuration</param>
-    public static IServiceCollection AddCqrs(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCqrsModule(this IServiceCollection services, IConfiguration configuration)
     {
         var redisSection = configuration.GetSection("Redis");
 

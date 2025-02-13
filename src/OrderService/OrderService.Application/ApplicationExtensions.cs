@@ -2,6 +2,7 @@ using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderService.Application.Abstractions;
+using OrderService.Application.KafkaSerializers;
 using OrderService.Entities.Models.Responses;
 
 namespace OrderService.Application;
@@ -12,16 +13,13 @@ public static class ApplicationExtensions
     /// Adds module with domain services
     /// </summary>
     /// <param name="services">Service collection</param>
-    /// <param name="outboxSection">IConfiguration</param>
-    public static IServiceCollection AddApplicationServicesModule(this IServiceCollection services, IConfigurationSection outboxSection)
+    public static IServiceCollection AddApplicationServicesModule(this IServiceCollection services)
     {
-        return services.
-            AddScoped<IOrderService, OrderService>()
-            .AddScoped<IOutboxService, OutboxService>()
-            .RegisterOutboxConfig(outboxSection);
+        return services.AddScoped<IOrderService, OrderService>()
+            .AddScoped<IOutboxService, OutboxService>();
     }
 
-    private static IServiceCollection RegisterOutboxConfig(this IServiceCollection services, IConfigurationSection outboxSection)
+    public static IServiceCollection RegisterOutboxConfig(this IServiceCollection services, IConfigurationSection outboxSection)
     {
         var dbConfig = new OutboxConfig();
         outboxSection.Bind(dbConfig);
@@ -46,7 +44,10 @@ public static class ApplicationExtensions
                 BatchSize = int.Parse(kafkaConfig["Produce:BatchSize"] ?? "16384"),
                 LingerMs = int.Parse(kafkaConfig["Produce:LingerMs"] ?? "5"),
             };
-            return new ProducerBuilder<Guid, OutboxResponseModel>(producerConfig).Build();
+            return new ProducerBuilder<Guid, OutboxResponseModel>(producerConfig)
+                .SetKeySerializer(new GuidSerializer())
+                .SetValueSerializer(new OutboxResponseModelSerializer())
+                .Build();
         });
 
         return services;

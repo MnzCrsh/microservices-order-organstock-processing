@@ -1,4 +1,3 @@
-using System.Data;
 using System.Text;
 using Confluent.Kafka;
 using OrderService.Application.Abstractions;
@@ -25,27 +24,10 @@ public class OutboxService(
         {
             await unitOfWork.BeginTransactionAsync();
 
-            var outboxMessages = await repository.FetchMessagesByStatusAsync(
-                config.BatchSize, MessageStatus.Pending, unitOfWork.Connection, unitOfWork.Transaction);
+            var results = await ProcessMessages();
 
-            var messages = outboxMessages.ToList();
-            if (messages.Count <= 0)
-            {
-                return;
-            }
-
-            var produceTasks = messages.Select(async msg =>
-            {
-                var kafkaMessage = CreateKafkaMessage(msg!);
-                var deliveryReport = await producer.ProduceAsync("order-outbox-service", kafkaMessage);
-
-                return (msg!.Id, IsAck: deliveryReport.Status == PersistenceStatus.Persisted);
-            });
-
-            var results = Task.WhenAll(produceTasks);
-
-            await UpdateSentMessages(results, unitOfWork.Connection, unitOfWork.Transaction);
-            await UpdateFailedMessages(results, unitOfWork.Connection, unitOfWork.Transaction);
+            await UpdateSentMessages(results);
+            await UpdateFailedMessages(results);
 
             await unitOfWork.CommitAsync();
         }
@@ -56,21 +38,43 @@ public class OutboxService(
         }
     }
 
-    private async Task UpdateFailedMessages(Task<(Guid Id, bool IsAck)[]> results, IDbConnection conn, IDbTransaction transaction)
+    private async Task<(Guid Id, bool IsAck)[]> ProcessMessages()
     {
-        var failedIds = results.Result.Where(r => r.IsAck is false).Select(x => x.Id).ToList();
+        var outboxMessages = await repository.FetchMessagesByStatusAsync(
+            config.BatchSize, MessageStatus.Pending, unitOfWork.Connection, unitOfWork.Transaction!);
+
+        var messages = outboxMessages.ToList();
+        if (messages.Count <= 0)
+        {
+            return [];
+        }
+
+        var produceTasks = messages.Select(async msg =>
+        {
+            var kafkaMessage = CreateKafkaMessage(msg!);
+            var deliveryReport = await producer.ProduceAsync("order-outbox-service", kafkaMessage);
+
+            return (msg!.Id, IsAck: deliveryReport.Status == PersistenceStatus.Persisted);
+        });
+
+        return await Task.WhenAll(produceTasks);
+    }
+
+    private async Task UpdateFailedMessages((Guid Id, bool IsAck)[] results)
+    {
+        var failedIds = results.Where(r => r.IsAck is false).Select(x => x.Id).ToList();
         if (failedIds.Count > 0)
         {
-            await repository.UpdateAsync(failedIds, MessageStatus.Failed, conn, transaction);
+            await repository.UpdateAsync(failedIds, MessageStatus.Failed, unitOfWork.Connection, unitOfWork.Transaction!);
         }
     }
 
-    private async Task UpdateSentMessages(Task<(Guid Id, bool IsAck)[]> results, IDbConnection conn, IDbTransaction transaction)
+    private async Task UpdateSentMessages((Guid Id, bool IsAck)[] results)
     {
-        var processedIds = results.Result.Where(r => r.IsAck).Select(x => x.Id).ToList();
+        var processedIds = results.Where(r => r.IsAck).Select(x => x.Id).ToList();
         if (processedIds.Count > 0)
         {
-            await repository.UpdateAsync(processedIds, MessageStatus.Processed, conn, transaction);
+            await repository.UpdateAsync(processedIds, MessageStatus.Processed, unitOfWork.Connection, unitOfWork.Transaction!);
         }
     }
 
