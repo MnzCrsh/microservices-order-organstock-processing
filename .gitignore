@@ -65,8 +65,5 @@ docker-compose.override.yml
 .docker/
 
 # Build and runtime artifacts for Docker
-**/Dockerfile
-**/docker-compose.yml
 **/docker-compose.override.yml
 **/.docker/
-**/docker-compose*.yml
