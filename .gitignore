@@ -67,3 +67,24 @@ docker-compose.override.yml
 # Build and runtime artifacts for Docker
 **/docker-compose.override.yml
 **/.docker/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.ctxt
+hs_err_pid*
+replay_*.log
+.mtj.tmp/
+*.tar.gz
+*.rar
+*.zip
+
+# Gradle
+.gradle/
+build/
+out/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
