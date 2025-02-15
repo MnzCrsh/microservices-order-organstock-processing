@@ -2,8 +2,7 @@ name: order-service-deployment
 
 on:
     push:
-        branches:
-            - master
+        branches: [ "master" ]
         paths:
             - 'OrderService/**'
 
