@@ -3,6 +3,8 @@ name: order-service-pipeline
 on:
   pull_request:
     branches: [ "master" ]
+    paths:
+            - 'OrderService/**'
 
 jobs:
   build:
