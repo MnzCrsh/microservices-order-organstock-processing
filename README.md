@@ -1,6 +1,6 @@
 # Microservices Architecture with CQRS, Event Sourcing, and Saga Pattern
 
-[![order-service-pipeline](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-pipeline.yml/badge.svg)](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-pipeline.yml) [![order-service-deployment](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-deployment.yml/badge.svg)](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-deployment.yml)
+[![order-service-pipeline](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-pipeline.yml/badge.svg)](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-pipeline.yml) [![order-service-deployment](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-deployment.yml/badge.svg?branch=master)](https://github.com/MnzCrsh/microservices-order-organstock-processing/actions/workflows/order-service-deployment.yml)
 
 This project demonstrates a microservices architecture using CQRS, Event Sourcing, Apache Kafka, and the Saga pattern. It simulates a simple order processing system with payment handling, event-driven architecture, and compensating transactions in case of failures.
 
