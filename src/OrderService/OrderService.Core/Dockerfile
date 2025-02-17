@@ -6,17 +6,17 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src/OrderService
-COPY ["OrderService.Core/OrderService.Core.csproj", "OrderService.Core/"]
-COPY ["OrderService.CQRS/OrderService.CQRS.csproj", "OrderService.CQRS/"]
-COPY ["OrderService.Application/OrderService.Application.csproj", "OrderService.Application/"]
-COPY ["OrderService.Entities/OrderService.Entities.csproj", "OrderService.Entities/"]
-COPY ["OrderService.Mapping/OrderService.Mapping.csproj", "OrderService.Mapping/"]
-COPY ["OrderService.Repositories/OrderService.Repositories.csproj", "OrderService.Repositories/"]
-COPY ["OrderService.Validation/OrderService.Validation.csproj", "OrderService.Validation/"]
-COPY ["OrderService.OutboxDaemon/OrderService.OutboxDaemon.csproj", "OrderService.OutboxDaemon/"]
-COPY ["OrderService.Postgres/OrderService.Postgres.csproj", "OrderService.Postgres/"]
-COPY ["OrderService.gRPC/OrderService.gRPC.csproj", "OrderService.gRPC/"]
+WORKDIR /src
+COPY ["src/OrderService/OrderService.Core/OrderService.Core.csproj", "OrderService.Core/"]
+COPY ["src/OrderService/OrderService.CQRS/OrderService.CQRS.csproj", "OrderService.CQRS/"]
+COPY ["src/OrderService/OrderService.Application/OrderService.Application.csproj", "OrderService.Application/"]
+COPY ["src/OrderService/OrderService.Entities/OrderService.Entities.csproj", "OrderService.Entities/"]
+COPY ["src/OrderService/OrderService.Mapping/OrderService.Mapping.csproj", "OrderService.Mapping/"]
+COPY ["src/OrderService/OrderService.Repositories/OrderService.Repositories.csproj", "OrderService.Repositories/"]
+COPY ["src/OrderService/OrderService.Validation/OrderService.Validation.csproj", "OrderService.Validation/"]
+COPY ["src/OrderService/OrderService.OutboxDaemon/OrderService.OutboxDaemon.csproj", "OrderService.OutboxDaemon/"]
+COPY ["src/OrderService/OrderService.Postgres/OrderService.Postgres.csproj", "OrderService.Postgres/"]
+COPY ["src/OrderService/OrderService.gRPC/OrderService.gRPC.csproj", "OrderService.gRPC/"]
 RUN dotnet restore "OrderService.Core/OrderService.Core.csproj"
 COPY . .
 WORKDIR "/src/OrderService/OrderService.Core"
