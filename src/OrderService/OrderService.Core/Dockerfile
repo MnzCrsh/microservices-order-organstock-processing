@@ -18,7 +18,7 @@ COPY ["src/OrderService/OrderService.OutboxDaemon/OrderService.OutboxDaemon.cspr
 COPY ["src/OrderService/OrderService.Postgres/OrderService.Postgres.csproj", "OrderService.Postgres/"]
 COPY ["src/OrderService/OrderService.gRPC/OrderService.gRPC.csproj", "OrderService.gRPC/"]
 
-COPY ["src/Protos", "/Protos/"]
+COPY ["src/Protos", "/src/Protos/"]
 
 RUN dotnet restore "OrderService.Core/OrderService.Core.csproj"
 COPY src/OrderService/ /src/OrderService/
