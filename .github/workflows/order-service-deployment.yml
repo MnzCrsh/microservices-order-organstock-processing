@@ -15,9 +15,9 @@ jobs:
         - id: set_cond
           run: |
             if [[ "${GITHUB_EVENT}" == "push" && "${GITHUB_HEAD_BRANCH}" == "master" ]]; then
-              echo "::set-output name=valid::true"
+              echo "valid=true" >> $GITHUB_OUTPUT
             else
-              echo "::set-output name=valid::false"
+              echo "valid=false" >> $GITHUB_OUTPUT
             fi
           env:
             GITHUB_EVENT: ${{ github.event.workflow_run.event }}
