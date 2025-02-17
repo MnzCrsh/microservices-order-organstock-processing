@@ -6,28 +6,28 @@ on:
       types: [completed]
 
 jobs:
-    check_if_merged_in_master:
-      runs-on: ubuntu-latest
-      outputs:
-        valid: ${{ steps.set_cond.outputs.valid }}
+    # check_if_merged_in_master:
+    #   runs-on: ubuntu-latest
+    #   outputs:
+    #     valid: ${{ steps.set_cond.outputs.valid }}
 
-      steps:
-        - id: set_cond
-          run: |
-            if [[ "${GITHUB_EVENT}" == "push" && "${GITHUB_HEAD_BRANCH}" == "master" ]]; then
-              echo "valid=true" >> $GITHUB_OUTPUT
-            else
-              echo "valid=false" >> $GITHUB_OUTPUT
-            fi
-          env:
-            GITHUB_EVENT: ${{ github.event.workflow_run.event }}
-            GITHUB_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+    #   steps:
+    #     - id: set_cond
+    #       run: |
+    #         if [[ "${GITHUB_EVENT}" == "push" && "${GITHUB_HEAD_BRANCH}" == "master" ]]; then
+    #           echo "valid=true" >> $GITHUB_OUTPUT
+    #         else
+    #           echo "valid=false" >> $GITHUB_OUTPUT
+    #         fi
+    #       env:
+    #         GITHUB_EVENT: ${{ github.event.workflow_run.event }}
+    #         GITHUB_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
 
 
     deployment:
 
-        needs: check_if_merged_in_master
-        if: needs.check_if_merged_in_master.outputs.valid == 'true'
+        # needs: check_if_merged_in_master
+        # if: needs.check_if_merged_in_master.outputs.valid == 'true'
 
         runs-on: ubuntu-latest
 
