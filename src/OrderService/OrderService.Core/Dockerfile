@@ -18,7 +18,7 @@ COPY ["src/OrderService/OrderService.OutboxDaemon/OrderService.OutboxDaemon.cspr
 COPY ["src/OrderService/OrderService.Postgres/OrderService.Postgres.csproj", "OrderService.Postgres/"]
 COPY ["src/OrderService/OrderService.gRPC/OrderService.gRPC.csproj", "OrderService.gRPC/"]
 RUN dotnet restore "OrderService.Core/OrderService.Core.csproj"
-COPY . .
+COPY src/OrderService/ /src/OrderService/
 WORKDIR "/src/OrderService/OrderService.Core"
 RUN dotnet build "OrderService.Core.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
