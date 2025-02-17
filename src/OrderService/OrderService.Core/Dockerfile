@@ -6,7 +6,7 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
+WORKDIR /src/OrderService
 COPY ["OrderService.Core/OrderService.Core.csproj", "OrderService.Core/"]
 COPY ["OrderService.CQRS/OrderService.CQRS.csproj", "OrderService.CQRS/"]
 COPY ["OrderService.Application/OrderService.Application.csproj", "OrderService.Application/"]
@@ -19,7 +19,7 @@ COPY ["OrderService.Postgres/OrderService.Postgres.csproj", "OrderService.Postgr
 COPY ["OrderService.gRPC/OrderService.gRPC.csproj", "OrderService.gRPC/"]
 RUN dotnet restore "OrderService.Core/OrderService.Core.csproj"
 COPY . .
-WORKDIR "/src/OrderService.Core"
+WORKDIR "/src/OrderService/OrderService.Core"
 RUN dotnet build "OrderService.Core.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
