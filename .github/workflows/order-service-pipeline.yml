@@ -5,6 +5,10 @@ on:
     branches: [ "master" ]
     paths:
             - 'OrderService/**'
+  push:
+    branches: [ "master" ]
+    paths:
+            - 'OrderService/**'
 
 jobs:
   build:
