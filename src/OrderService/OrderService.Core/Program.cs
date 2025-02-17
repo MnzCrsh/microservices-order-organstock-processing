@@ -12,12 +12,14 @@ using OrderService.Validation;
 var builder = WebApplication.CreateBuilder(args);
 
 new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json", optional: false)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables()
     .Build();
 
 var kafkaConfig = builder.Configuration.GetSection("Kafka");
 var postgresConfig = builder.Configuration.GetSection("Postgres");
 var outboxConfig = builder.Configuration.GetSection("Outbox");
+var sslConfig = builder.Configuration.GetSection("Ssl");
 
 if (builder.Environment.EnvironmentName != "Test")
 {
@@ -45,7 +47,7 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Listen(IPAddress.Any, 5001, listenOptions =>
     {
         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-        listenOptions.UseHttps();
+        listenOptions.UseHttps(sslConfig["certPath"]!, sslConfig["password"]);
     });
 });
 
