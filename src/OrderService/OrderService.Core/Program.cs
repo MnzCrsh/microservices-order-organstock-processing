@@ -12,7 +12,8 @@ using OrderService.Validation;
 var builder = WebApplication.CreateBuilder(args);
 
 new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json", optional: false)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables()
     .Build();
 
 var kafkaConfig = builder.Configuration.GetSection("Kafka");
